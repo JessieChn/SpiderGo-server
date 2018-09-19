@@ -3,8 +3,11 @@ package com.example.demo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +18,24 @@ import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringRunner;
-
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import com.example.demo.entity.Movie;
 import com.example.demo.entity.Phone;
+import com.example.demo.entity.RndScope;
 import com.example.demo.entity.User;
 import com.example.demo.repository.MovieRepository;
 import com.example.demo.repository.PhoneRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.BeanUtil;
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.QueryBuilder;
+import com.mongodb.ServerAddress;
 
 import net.minidev.json.writer.BeansMapper.Bean;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -145,6 +154,89 @@ public class JavaMongoTestApplicationTests {
             System.out.println(phone);
         }
       }
+    
+    @Test
+    public void aggregateFunction(){
+        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd");
+/*        new newAggregation(
+                
+                ) */
+        //mongoOps.aggregate(aggregation, inputType, outputType)
+      }
+    
+    /***
+     * 从数据集中，随机得到指定个数的文档。
+     * @param nLimit 随机得到文档个数
+     * @param query 先决条件
+     * @param dbCollection 数据集
+     * @return
+     * @throws Exception
+     */
+    public DBCursor GetRandomResult(int nLimit,BasicDBObject query,DBCollection dbCollection)
+            throws Exception{
+        if(query==null){
+            query=new BasicDBObject();
+        }
+        if(query.containsKey("$where")){
+            throw new Exception("查询中不能包含$where项");
+        }
+        
+        //通过ObjectId.get()得到二个唯一的变量名。
+        String sgteArgs="_OpenTmp"+ObjectId.get().toString();
+        String slteArgs="_OpenTmp"+ObjectId.get().toString();
+        
+        //得到数据的总数
+        long nLength=dbCollection.count(query);
+        System.out.println("记录总数:"+nLength);
+        //根据要获取的记录的条数，对范围值进行修改
+        RndScope rndScope=new RndScope(nLength,nLimit);
+
+        //将创建时间太久的给删除掉
+        DBCollection dbSystem=dbCollection.getDB().getCollection("system.js");
+        dbSystem.remove(new BasicDBObjectBuilder()
+            .add("createDate",
+                    new BasicDBObjectBuilder()
+                    .add("$lt",new Date((new Date()).getTime()-24*60*1000)).get())
+            .add("_id",Pattern.compile("_OpenTmp*"))
+            .get()
+                );
+        //向system.js集合中添加二个全局的变量
+        dbSystem.findAndModify(
+                new BasicDBObjectBuilder().add("_id", sgteArgs).get(),
+                null,null, false, new BasicDBObjectBuilder()
+                .add("_id", sgteArgs)
+                .add("value",rndScope.getGteVal())
+                .add("createDate",new Date())
+                .get(), false, true);
+        dbSystem.findAndModify(new BasicDBObjectBuilder().add("_id",slteArgs).get()
+                ,null,null,false,new BasicDBObjectBuilder()
+                                    .add("_id",slteArgs)
+                                    .add("value",rndScope.getLteVal())
+                                    .add("createDate",new Date())
+                                    .get(),false,true);
+        
+        //查询中添加对于随机数的判断
+        query.put("$where", "function(){var rnd=Math.random();return (rnd>="
+                    +sgteArgs+" && rnd<="+slteArgs+");}");
+        
+        DBCursor result=dbCollection.find(query).limit(nLimit);
+        
+        return result;
+    }
+    
+    @Test
+    public void DocumentTest5() throws Exception{
+        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd");
+        DBCollection collection = mongoOps.getCollection("phone");
+        System.out.println(collection.getCount());
+        DBCursor dbCursor = GetRandomResult(20,new BasicDBObject(),collection);
+        System.out.println(dbCursor.count());
+        while(dbCursor.hasNext()) {
+            DBObject obj = dbCursor.next();
+            System.out.println(obj);
+         }
+    }
+    
     
     /**
      * 复杂嵌入文档测试
