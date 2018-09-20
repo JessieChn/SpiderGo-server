@@ -12,8 +12,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -27,6 +35,7 @@ import com.example.demo.repository.MovieRepository;
 import com.example.demo.repository.PhoneRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.BeanUtil;
+import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
@@ -39,6 +48,7 @@ import com.mongodb.ServerAddress;
 
 import net.minidev.json.writer.BeansMapper.Bean;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class JavaMongoTestApplicationTests {
@@ -125,6 +135,8 @@ public class JavaMongoTestApplicationTests {
     @Test
     public void DocumentTest3(){
         List<Phone> phones = phoneRepository.findByBrand("暂无信息");
+/*        Page<Phone> phonePage = phoneRepository.findByBrand("小辣椒", new PageRequest(0, 5));
+        System.out.println(phonePage);*/
         for(Phone phone : phones)
             System.out.println(phone);
     }
@@ -236,7 +248,31 @@ public class JavaMongoTestApplicationTests {
             System.out.println(obj);
          }
     }
-    
+    //注意这个test8 拥有翻页，过滤，project,slice等功能。
+    @Test
+    public void DocumentTest8() throws Exception{
+        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd");
+        Query query = new Query(Criteria.where("brand").regex("小米").and("ram").in("6GB","4GB"));//还支持shop.shop_name，不支持数组操作
+        query.fields().include("name");
+        query.fields().include("ram");
+        query.fields().include("detail_url");
+        query.fields().include("shop.shop_name"); //还支持shop.shop_name ，不支持数组操作
+        query.fields().slice("thumb_pic", 1);
+        
+        Pageable pageable = new PageRequest(0, 5); //页数是从0开始
+        query.with(pageable);
+        List<Phone> phones = mongoOps.find(query,Phone.class);
+        for(Phone phone : phones) {
+            System.out.println(phone);
+        }
+        /*Query query = new Query();
+        query.addCriteria(Criteria.where("_id").gt(new ObjectId(tsdataId)));
+        query.fields().include("_id");
+        query.fields().include("cust.number");
+        query.with(new Sort(new Order(Direction.ASC, "_id")));
+        query.limit(pageSize);*/
+        
+    }
     
     /**
      * 复杂嵌入文档测试
@@ -278,8 +314,46 @@ public class JavaMongoTestApplicationTests {
         }
     }
     
+    @Test
+    public void PhoneDocumentTest6(){
+        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd");
+        MatchOperation  match3 = Aggregation.match(new Criteria("_id").is("5b88e5d400199531c0b4093e"));
+        TypedAggregation<Phone> agg = Aggregation.newAggregation(Phone.class,
+                
+                match(Criteria.where("brand").is("小辣椒")),
+                
+                project("name","id"),match3);
+       
+/*        DBObject sample = new BasicDBObject("$sample", new BasicDBObject("size", 5));
+        AggregationOutput output = mongoOps.getCollection("jd").aggregate(sample);
+        Iterable<DBObject> list2 = output.results();
+        for (DBObject dbObject : list2) {
+            System.out.println(dbObject);
+        }版本有问题  
+        */
+        
+        //AggregationResults<String> groupResults = mongoOps.aggregate(agg, String.class);
+        //System.out.println(groupResults.getMappedResults());
+        AggregationResults<Phone> list = mongoOps.aggregate(agg, Phone.class);
+        for(Phone phone : list) {
+            System.out.println(phone.toString());
+        }
+        
+    }
     
-    
+    @Test
+    public void PhoneDocumentTest7(){
+        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd");        
+        TypedAggregation<Phone> agg = Aggregation.newAggregation(Phone.class,
+                //match(Criteria.where("shop.shop_name").regex("HTC")),
+                match(Criteria.where("thumb_pic").regex("//img10.360buyimg.com/n5/s54x54_jfs/t5695/91/3561869215/323052/765e493f/593e0ff5N1e3493e5.jpg")),
+                project("id","videoUrl","thumbPic"));
+        AggregationResults<String> list = mongoOps.aggregate(agg, String.class);
+        for(String phone : list) {
+            System.out.println(phone);
+        }
+        
+    }
 
 }
 

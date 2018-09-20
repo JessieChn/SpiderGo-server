@@ -8,13 +8,21 @@ import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.web.PageableDefault;
+
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Phone;
@@ -25,7 +33,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import com.example.demo.repository.PhoneRepository;;
+import com.example.demo.repository.PhoneRepository;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @RestController
 public class PhoneController {
@@ -181,5 +190,39 @@ public class PhoneController {
          }
         return null;
     }
+    
+    @ResponseBody  
+    @RequestMapping(value = "list", method=RequestMethod.GET)  
+    public Page<Phone> listByPageable(@PageableDefault(size = 5, value = 10) Pageable pageable) {  
+        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd");
+//        Query query = new Query(Criteria.where("brand").regex("小米").and("ram").in("6GB","4GB"));//还支持shop.shop_name，不支持数组操作
+        long begintime = System.currentTimeMillis();
+        for(int i = 0; i<1;i++) {
+            Query query = new Query();//还支持shop.shop_name，不支持数组操作
+            query.fields().include("name");
+            query.fields().include("ram");
+            //query.fields().include("detail_url");
+            query.fields().include("shop.shop_name"); //还支持shop.shop_name ，不支持数组操作
+            query.fields().slice("thumb_pic", 1);
+          //Pageable pageable = new PageRequest(0, 5); //页数是从0开始
+            query.with(pageable);
+            List<Phone> phones = mongoOps.find(query,Phone.class);
+            System.out.println(phones);
+        }
+/*        for(int i = 0; i<1;i++) {
+            Page<Phone> phonePage = phoneRepository.findAll(pageable);
+            System.out.println(phonePage.getContent());
+        }*/
+        long endtime=System.currentTimeMillis();
+        long costTime = (endtime - begintime);
+        System.out.println(costTime);
+/*        for(Phone phone : phones) {
+            System.out.println(phone);
+        }
+        */
+        
+        Pageable pageable2 = new PageRequest((int)(1+Math.random()*(100-1+1)), 10);
+        return phoneRepository.findAll(pageable2);
+    }  
 
 }

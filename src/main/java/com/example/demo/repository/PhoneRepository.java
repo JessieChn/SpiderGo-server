@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -25,8 +27,14 @@ public interface PhoneRepository extends MongoRepository<Phone,String>{
      * @return
      */
     //List<Movie> findByTitle(String title);
-    @Query(value = "{'brand':?0 ,'id':'jd4843511'}", fields = "{ '_id' : 1, 'id' : 1, 'thumb_pic':{'$slice':-1}}")
+    //@Query(value = "{'brand':?0 ,'id':'jd4843511'}", fields = "{ '_id' : 1, 'id' : 1, 'thumb_pic':{'$slice':-1}}")
     List<Phone> findByBrand(String brand);
+    
+    Page<Phone> findByBrand(String brand, Pageable pageable);
+    
+    //@Query(fields = "{ '_id' : 1, 'id' : 1, 'thumb_pic':{'$slice':-1}}")
+    Page<Phone> findAll(Pageable pageable);
+    
     
 
     
