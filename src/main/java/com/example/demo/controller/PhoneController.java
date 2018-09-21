@@ -243,7 +243,7 @@ public class PhoneController {
            query.fields().slice("prices", -1);
            List<Prices> prices = mongoOps.find(query,Prices.class);
            System.out.println(prices.get(0).getPrices()[0].getPriceValue());
-           pricesStr.add(prices.get(0).getPrices()[0].getPriceValue());
+           pricesStr.add(prices.get(0).getPrices()[0].getPriceValue());//
         }
         pageMap.put("page", phonePage);
         pageMap.put("prices", pricesStr);
