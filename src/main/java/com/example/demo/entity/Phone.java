@@ -51,6 +51,7 @@ public class Phone {
     private String maxMemSup;
     private String resolution;
     private String figer;
+    private String newPrice;
     public String get_id() {
         return _id;
     }

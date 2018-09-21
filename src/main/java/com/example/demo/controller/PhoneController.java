@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
@@ -17,6 +20,7 @@ import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.StreamingHttpOutputMessage;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Phone;
+import com.example.demo.entity.Prices;
 import com.example.demo.entity.RndScope;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
@@ -34,6 +39,8 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.example.demo.repository.PhoneRepository;
+import com.example.demo.repository.PricesRepository;
+
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @RestController
@@ -41,6 +48,8 @@ public class PhoneController {
     
     @Autowired
     private PhoneRepository phoneRepository;
+    @Autowired
+    private PricesRepository pricesRepository; 
     
     private final static DBObject listField = new BasicDBObject(){{
        put("id", true); 
@@ -193,8 +202,8 @@ public class PhoneController {
     
     @ResponseBody  
     @RequestMapping(value = "list", method=RequestMethod.GET)  
-    public Page<Phone> listByPageable(@PageableDefault(size = 5, value = 10) Pageable pageable) {  
-        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd");
+    public Map<String, Object> listByPageable(@PageableDefault(size = 5, value = 10) Pageable pageable) {  
+/*        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd");
 //        Query query = new Query(Criteria.where("brand").regex("小米").and("ram").in("6GB","4GB"));//还支持shop.shop_name，不支持数组操作
         long begintime = System.currentTimeMillis();
         for(int i = 0; i<1;i++) {
@@ -209,20 +218,36 @@ public class PhoneController {
             List<Phone> phones = mongoOps.find(query,Phone.class);
             System.out.println(phones);
         }
-/*        for(int i = 0; i<1;i++) {
+        for(int i = 0; i<1;i++) {
             Page<Phone> phonePage = phoneRepository.findAll(pageable);
             System.out.println(phonePage.getContent());
-        }*/
+        }
         long endtime=System.currentTimeMillis();
         long costTime = (endtime - begintime);
-        System.out.println(costTime);
+        System.out.println(costTime);*/
 /*        for(Phone phone : phones) {
             System.out.println(phone);
         }
         */
-        
-        Pageable pageable2 = new PageRequest((int)(1+Math.random()*(100-1+1)), 10);
-        return phoneRepository.findAll(pageable2);
+        List<String> pricesStr = new ArrayList<>();
+        Map<String, Object> pageMap = new HashMap<>();
+        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd");
+        Pageable pageable2 = new PageRequest((int)(1+Math.random()*(100-1+1)), 2);
+        Page<Phone> phonePage =  phoneRepository.findAll(pageable2);
+        for(Phone phone : phonePage.getContent()) {
+           System.out.println(phone);
+           //List<Prices> prices = pricesRepository.findById(phone.getId());
+           //System.out.println(prices);
+           Query query = new Query(Criteria.where("id").is(phone.getId()));//还支持shop.shop_name，不支持数组操作
+           query.fields().include("id");
+           query.fields().slice("prices", -1);
+           List<Prices> prices = mongoOps.find(query,Prices.class);
+           System.out.println(prices.get(0).getPrices()[0].getPriceValue());
+           pricesStr.add(prices.get(0).getPrices()[0].getPriceValue());
+        }
+        pageMap.put("page", phonePage);
+        pageMap.put("prices", pricesStr);
+        return pageMap;
     }  
 
 }
