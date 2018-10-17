@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -19,6 +20,9 @@ public class Movie {
     private String[] author;
     @Field("comment2")
     private List<Comment> comment;
+    @DBRef
+    private Director director;
+    
     public String getId() {
         return id;
     }
@@ -55,11 +59,19 @@ public class Movie {
     public void setComment(List<Comment> comment) {
         this.comment = comment;
     }
+    
+    public Director getDirector() {
+        return director;
+    }
+    public void setDirector(Director director) {
+        this.director = director;
+    }
     @Override
     public String toString() {
         return "Movie [id=" + id + ", title=" + title + ", like=" + like + ", dislike=" + dislike + ", author="
-                + Arrays.toString(author) + ", comment=" + comment + "]";
+                + Arrays.toString(author) + ", comment=" + comment + ", director=" + director + "]";
     }
+    
     
       
 }

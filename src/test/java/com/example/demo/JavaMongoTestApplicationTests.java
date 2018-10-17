@@ -2,16 +2,20 @@ package com.example.demo;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +31,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+
+import com.example.demo.entity.Director;
 import com.example.demo.entity.Movie;
 import com.example.demo.entity.Phone;
+import com.example.demo.entity.Prices;
 import com.example.demo.entity.RndScope;
 import com.example.demo.entity.User;
 import com.example.demo.repository.MovieRepository;
@@ -45,6 +52,10 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.QueryBuilder;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 
 import net.minidev.json.writer.BeansMapper.Bean;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -354,6 +365,39 @@ public class JavaMongoTestApplicationTests {
         }
         
     }
-
+    
+    @Test
+    public void PhoneDocumentTest8(){
+        MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "jd3");   
+        TypedAggregation<Prices> agg = Aggregation.newAggregation(
+                Prices.class,
+//                match(Criteria.where("prices").elemMatch(Criteria.where("price_value").regex("2097").and("date").is("2018-09-07"))),
+                match(Criteria.where("prices").elemMatch(Criteria.where("date").regex("2018-09-27"))),
+//                group(fields),
+                sort(Sort.Direction.ASC,"id"),
+                project("id","prices"),
+//                skip(elementsToSkip),
+//                s
+               limit(10)
+                );
+        AggregationResults<String> list = mongoOps.aggregate(agg, String.class);
+        for(String phone : list) {
+            System.out.println(phone);
+        }
+        Phone phone = phoneRepository.findOne("jd5438529");
+        System.out.println(phone);
+//        List<Phone> phones =  phoneRepository.findByBrandAndRamAndRom(null, "6GB", "128GB");
+//        for(Phone phone3 : phones) {
+//            System.out.println("-----------------");
+//            System.out.println(phone3);
+//        }
+        //phoneRepository.
+    }
+    @Test
+    public void PhoneDocumentTest9(){
+        List<Movie> movies = movieRepository.findAll();
+        for(Movie movie: movies)
+            System.out.println(movie);
+    }
 }
 

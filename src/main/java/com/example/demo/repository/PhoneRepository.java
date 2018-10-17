@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -9,7 +10,6 @@ import org.springframework.data.mongodb.repository.Query;
 
 import com.example.demo.entity.Phone;
 import java.lang.String;
-
 public interface PhoneRepository extends MongoRepository<Phone,String>{
     /*
      * MongoRepository与HibernateTemplete相似，提供一些基本的方法，
@@ -32,8 +32,13 @@ public interface PhoneRepository extends MongoRepository<Phone,String>{
     
     Page<Phone> findByBrand(String brand, Pageable pageable);
     
-    //@Query(fields = "{ '_id' : 1, 'id' : 1, 'thumb_pic':{'$slice':-1}}")
+    //@Query(fields = "{ '_id' : 1, 'id' : 1, 'thumb_pic':{'$slice':-1}}") //翻页的不能加上query
     Page<Phone> findAll(Pageable pageable);
+    
+    List<Phone> findByBrandAndRamAndRom(String brand, String ram,String rom);
+    
+    
+    
     
     
 

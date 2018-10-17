@@ -247,6 +247,9 @@ public class PhoneController {
         }
         pageMap.put("page", phonePage);
         pageMap.put("prices", pricesStr);
+        
+        
+        
         return pageMap;
     }  
 
