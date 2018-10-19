@@ -1,14 +1,20 @@
 package com.example.demo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.lang.Nullable;
 
 import com.example.demo.entity.Phone;
+import com.example.demo.entity.PhoneDisplay;
+import com.example.demo.entity.PhoneListInfor;
+
 import java.lang.String;
 public interface PhoneRepository extends MongoRepository<Phone,String>{
     /*
@@ -27,17 +33,29 @@ public interface PhoneRepository extends MongoRepository<Phone,String>{
      * @return
      */
     //List<Movie> findByTitle(String title);
-    //@Query(value = "{'brand':?0 ,'id':'jd4843511'}", fields = "{ '_id' : 1, 'id' : 1, 'thumb_pic':{'$slice':-1}}")
-    List<Phone> findByBrand(String brand);
+    @Query(value = "{'brand':?0 ,'id':'jd6448589'}", fields = "{ '_id' : 1, 'id' : 1, 'thumb_pic':{'$slice':-1}}")
+    List<Phone> findByBrand123(String brand);
     
-    Page<Phone> findByBrand(String brand, Pageable pageable);
     
-    //@Query(fields = "{ '_id' : 1, 'id' : 1, 'thumb_pic':{'$slice':-1}}") //翻页的不能加上query
+    
+    //@Query(fields = "{ '_id' : 1, 'id' : 1, 'thumb_pic':{'$slice':-1}}")
     Page<Phone> findAll(Pageable pageable);
     
-    List<Phone> findByBrandAndRamAndRom(String brand, String ram,String rom);
     
+    @Query(value = "{'id':?0}", fields = "{'ram':1,'rom':1,'source':1,'name':1 ,'thumb_pic':{'$slice':1}}")
+    PhoneDisplay findByIdUnity(String brand);
     
+    @Query(value = "{'brand':{'$regex':?0},'ram':{'$regex':?1},'rom':{'$regex':?2}}", fields = "{'ram':1,'rom':1,'source':1,'name':1 ,'thumb_pic':{'$slice':1}}")
+    Page<PhoneListInfor> findByIdUnity2(String brand,String ram,String rom,Pageable pageable);
+    
+    //List<String> findDistinctBrand();
+    
+    List<Phone> findByBrandIsContaining(String brand);
+//    @Nullable 用不了。。
+//    List<Phone> findByBrandAndRamAndRom(@Nullable String brand,@Nullable String ram,@Nullable String rom);
+//    
+//    Optional<List<Phone>> findOptionalByBrandAndRamAndRom(String brand,String ram,String rom);
+//    
     
     
     
