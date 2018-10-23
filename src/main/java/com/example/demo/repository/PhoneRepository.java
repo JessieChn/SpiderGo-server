@@ -45,8 +45,11 @@ public interface PhoneRepository extends MongoRepository<Phone,String>{
     @Query(value = "{'id':?0}", fields = "{'ram':1,'rom':1,'source':1,'name':1 ,'thumb_pic':{'$slice':1}}")
     PhoneDisplay findByIdUnity(String brand);
     
-    @Query(value = "{'brand':{'$regex':?0},'ram':{'$regex':?1},'rom':{'$regex':?2}}", fields = "{'ram':1,'rom':1,'source':1,'name':1 ,'thumb_pic':{'$slice':1}}")
-    Page<PhoneListInfor> findByIdUnity2(String brand,String ram,String rom,Pageable pageable);
+    @Query(value = "{'brand':{'$regex':?0},'ram':{'$regex':?1},'rom':{'$regex':?2}, 'extra_message':{'$regex':?4}} , 'hot_spot':{'$elemMatch':{'$regex': ?3}}", fields = "{'ram':1,'rom':1,'source':1,'name':1 ,'thumb_pic':{'$slice':1}}")
+    Page<PhoneListInfor> findByIdUnity2(String brand,String ram,String rom,String hotSpot, String extraMessage , Pageable pageable);
+    
+    @Query(value = "{'hot_spot':{'$elemMatch':{'$regex': ?0}}}", fields = "{'ram':1,'rom':1,'source':1,'name':1 ,'thumb_pic':{'$slice':1}}")
+    List<PhoneDisplay> findByHotSpot(String hotSpot);
     
     //List<String> findDistinctBrand();
     
