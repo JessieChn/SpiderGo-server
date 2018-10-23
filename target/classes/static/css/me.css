@@ -1,0 +1,38 @@
+.m-padded-left-mini{
+    padding-left: 120%; !important;  /*1em = 14px*/
+}
+.m-padding-tb-mini{
+    padding-top: 0.2em; !important;
+    padding-bottom: 0.2em; !important;
+}
+.m-pink {
+    color: #FF1499;
+}
+.m-opacity {
+    opacity: 0.4; !important;
+}
+.m-margin-right-35 {
+    margin-right: 30px; !important;
+}
+
+@media screen and (max-width: 780px) {
+    /*缩小的时候隐藏了*/
+    .m-hide {
+        visibility: hidden;
+        height: 0px;
+        width: 0px;
+    }
+}
+
+@media screen and (min-width: 779px) {
+    /*放大的时候隐藏了*/
+    .m-display{
+        visibility: hidden;
+        height: 0px;
+        width: 0px;
+        display: none;
+    }
+}
+.m-margin-left {
+    margin-left: 150px; !important;
+}

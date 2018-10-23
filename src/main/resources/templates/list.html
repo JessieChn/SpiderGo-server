@@ -1,0 +1,431 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>列表页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css"
+          data-filtered="filtered">
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{css/me.css}">
+    <link rel="stylesheet" href="../static/css/animate.css" th:href="@{css/animate.css}">
+
+</head>
+<body>
+<div class="ui container">
+    
+    <!--logo和标语-->
+    <div class="ui text borderless menu small">
+        <div class="m-hide">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <img class="animated bounce" height="83" width="130" th:src="@{images/logo.png}" src="../static/images/logo.png">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div class="m-display">
+            <img height="40" width="65" th:src="@{images/logo.png}" src="../static/images/logo.png">
+        </div>
+        <div class="ui label item m-hide">
+            <img th:src="@{images/bug.png}" src="../static/images/bug.png">
+            <h6 th:text="#{app.futher.name}">&nbsp;爬取各大网商</h6>
+        </div>
+        <div class="ui label item m-hide">
+            <img th:src="@{images/analyse.png}" src="../static/images/analyse.png">
+            <h6 th:text="#{app.futher.name2}">&nbsp;分析价格趋势</h6>
+        </div>
+        <div class="ui label item m-hide">
+            <img src="images/money.png">
+            <!-- <h6>&nbsp;[[#{app.futher.name3}]]</h6> -->
+            <h6 th:text="#{app.futher.name3}">&nbsp;省钱省力省心</h6>
+        </div>
+        <div class="item right menu">
+            <div class=" ui item category search" style="width: 8rem">
+                <div class="ui icon input">
+                    <input th:value="${param.keyword}" class="prompt" type="text" placeholder="搜索...">
+                    <i class="search pink link icon"></i>
+                </div>
+                <div class="results" data-filtered="filtered"></div>
+            </div>
+            <div class=" ui item">
+                <button class="ui basic button" style="width: 8rem">
+                    <i class=" shopping bag pink icon"></i>
+                    收藏袋
+                    &nbsp;&nbsp;
+                    <div class="floating ui pink label">22</div>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<nav class="m-display">
+    <div class="ui menu tiny borderless inverted pink stackable " style="padding-top: 0.01em">
+        <div class="ui container">
+            <a class="header item">
+                <h3 class="ui white inverted header">首页</h3>
+            </a>
+        </div>
+    </div>
+</nav>
+<nav class="m-hide">
+    <div class="ui menu tiny borderless inverted pink stackable " style="padding-top: 0.01em">
+        <!--style="background-color: #FF1499"-->
+        <!--首页标签-->
+        <div class="ui container m-hide">
+            <a class="header item">
+                <h3 class="ui white inverted header">首页</h3>
+            </a>
+            <a class="item">
+                <h3 class="ui white inverted header">手机</h3>
+            </a>
+            <a class="item">
+                <h3 class="ui white inverted header">女装</h3>
+            </a>
+            <a class="item">
+                <h3 class="ui white inverted header">美妆</h3>
+            </a>
+            <a class="item">
+                <h3 class="ui white inverted header">男装</h3>
+            </a>
+            <a class="item">
+                <h3 class="ui white inverted header">家电</h3>
+            </a>
+            <a class="item">
+                <h3 class="ui white inverted header">鞋包</h3>
+            </a>
+            <a class="item">
+                <h3 class="ui white inverted header">配饰</h3>
+            </a>
+            <a class="item">
+                <h3 class="ui white inverted header">生活</h3>
+            </a>
+            <a class="item">
+                <h3 class="ui white inverted header">电脑</h3>
+            </a>
+            <div class="right fluid menu">
+                <div class="ui right labeled button inverted">
+                    <div class="ui icon button orange inverted ">
+                        <i class="fork icon inverted"></i>
+                    </div>
+                    <div class="ui label orange basic">
+                        <h3 class="ui white header inverted">分类</h3>
+                    </div>
+                </div>
+                <div class="ui right labeled button inverted">
+                    <div class="ui icon button orange inverted ">
+                        <i class="fork icon inverted"></i>
+                    </div>
+                    <div class="ui label orange secondary basic">
+                        <h3 class="ui white header inverted">公告</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="ui container" style="margin-top: 25px">
+	    <div class="ui segments">
+	       
+        <!--品牌选择-->
+        <div th:unless="${param.brand!=null && #strings.length(param.brand)>0}" class="ui segment large">
+            <!--<span class="ui secondary grey" style="margin-left: 25px; margin-right: 25px;">分类</span>-->
+            <a class="ui tag label"
+               style="margin-left: 25px; margin-right: 50px; padding-left: 28px;padding-right: 28px">品牌：</a>
+
+            <div class="ui horizontal celled link list" style="margin-top: 6px;margin-left: 20px">
+                <a th:each="obj,stat:${brands.result}" th:text="${obj}" class="item active m-margin-right-35" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${obj},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}" >
+                    华为
+                </a>
+                <div class="ui top right attached basic label">
+                    <div class="ui right dropdown item" id="dropdown-one">
+                        More
+                        <div class="menu" data-filtered="filtered">
+                            <a th:each="obj,stat:${brands.extraResults}" th:text="${obj}" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${obj},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}" class="item" data-filtered="filtered">Applications</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--运行内存选择-->
+        <div th:unless="${param.ram!=null && #strings.length(param.ram)>0}" class="ui pink segment large">
+            <a class="ui tag label" style="margin-left: 25px; margin-right: 50px;">
+                运行内存：
+            </a>
+            <div class="ui horizontal celled link list" style="margin-top: 6px; margin-left: 20px">
+                <a th:each="obj,stat:${rams.result}" th:text="${obj}" class="item active m-margin-right-35" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${param.brand},ram=${obj},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                    1GB
+                </a>
+                <div class="ui top right attached basic label">
+                    <div class="ui right dropdown item" id="dropdown-two">
+                        more
+                        <div class="menu" data-filtered="filtered">
+                            <a th:each="obj,stat:${rams.extraResults}" th:text="${obj}" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${param.brand},ram=${obj},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}" class="item" data-filtered="filtered">Applications</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--机身内存选择-->
+        <div th:unless="${param.rom!=null && #strings.length(param.rom)>0}" class="ui pink segment large">
+            <a class="ui tag label" style="margin-left: 25px; margin-right: 50px;">
+                机身内存：
+            </a>
+            <div class="ui horizontal celled link list" style="margin-top: 6px; margin-left: 20px">
+                <a  th:each="obj,stat:${roms.result}" th:text="${obj}" class="item active m-margin-right-35" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${param.brand},ram=${param.ram},rom=${obj},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                    32GB
+                </a>
+                <div class="ui top right attached basic label">
+                    <div class="ui right dropdown item" id="dropdown-three">
+                        More
+                        <div class="menu" data-filtered="filtered">
+                            <a th:each="obj,stat:${roms.extraResults}" th:text="${obj}" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${param.brand},ram=${param.ram},rom=${obj},hotSpot=${param.hotSpot},keyword=${param.keyword})}" class="item" data-filtered="filtered">Applications</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--选购热点选择-->
+        <div th:unless="${param.hotSpot!=null && #strings.length(param.hotSpot)>0}" class="ui pink segment large" style="margin-top: 6px">
+            <a class="ui tag label" style="margin-left: 25px; margin-right: 50px;">
+                选购热点：
+            </a>
+            <div class="ui horizontal celled link list" style="margin-top: 6px; margin-left: 20px">
+                <a  th:each="obj,stat:${hot_spots.result}" th:text="${obj}" class="item active m-margin-right-35" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${obj},keyword=${param.keyword})}">
+                    全面屏手机
+                </a>
+                <div class="ui top right attached basic label">
+                    <div class="ui right dropdown item" id="dropdown-four">
+                        More
+                        <div class="menu" data-filtered="filtered">
+                            <a th:each="obj,stat:${hot_spots.extraResults}" th:text="${obj}" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${obj},keyword=${param.keyword})}" class="item" data-filtered="filtered">Applications</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="app">
+<div class="ui container">
+    <div class="ui two column centered grid" style="margin-top:5px;">
+    <!-- <div th:text="${#strings.length(#httpServletRequest.getQueryString())>34}">123</div>如果有参数 -->
+        <div class="column centered row">
+            <a th:if="${param.keyword!=null && #strings.length(param.keyword)>0}" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}(brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot})}" class="ui purple image label" style="margin-top: 5px;">
+               <img src="../static/images/keyword.png" th:src="@{images/keyword.png}">
+                  <span th:text="${param.keyword}">红米note5</span>
+               <i class="delete icon"></i>
+            </a>
+		    <a th:if="${param.brand!=null && #strings.length(param.brand)>0}" th:href="@{/phoneToPrice?page=0&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}" class="ui pink image label" style="margin-top: 5px;">
+		       <img src="../static/images/brand.png" th:src="@{images/brand.png}">
+		          <span th:text="${param.brand}">天语</span>
+		       <i class="delete icon"></i>
+		    </a>    
+		    <a th:if="${param.ram!=null && #strings.length(param.ram)>0}" th:href="@{/phoneToPrice?page=0&brand={brand}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${param.brand},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}" class="ui orange image label" style="margin-top: 5px;">
+		       <img src="../static/images/ram.png" th:src="@{images/ram.png}">
+		          <span th:text="${param.ram}">6GB</span>
+		       <i class="delete icon"></i>
+		    </a> 
+		    <a th:if="${param.rom!=null && #strings.length(param.rom)>0}" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&hotSpot={hotSpot}&keyword={keyword}(brand=${param.brand},ram=${param.ram},hotSpot=${param.hotSpot},keyword=${param.keyword})}" class="ui teal image label" style="margin-top: 5px;">
+		       <img src="../static/images/rom.png" th:src="@{images/rom.png}">
+		          <span th:text="${param.rom}">128GB</span>
+		       <i class="delete icon"></i>
+		    </a> 
+		    <a th:if="${param.hotSpot!=null && #strings.length(param.hotSpot)>0}" th:href="@{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&keyword={keyword}(brand=${param.brand},ram=${param.ram},rom=${param.rom},keyword=${param.keyword})}" class="ui red image label" style="margin-top: 5px;" >
+		       <img src="../static/images/hot.png" th:src="@{images/hot.png}">
+		          <span th:text="${param.hotSpot}">人工智能</span>
+		       <i class="delete icon"></i>
+		    </a>
+		    <a th:if="${#httpServletRequest.getQueryString()!=null && #strings.length(#httpServletRequest.getQueryString())>36}" th:href="@{/phoneToPrice}" class="ui red image label" style="margin-top: 5px;">
+		       <img src="../static/images/clean.png" th:src="@{images/clean.png}">
+                  <!-- <span th:text="${#strings.length(#httpServletRequest.getQueryString())}">清除</span> -->
+                  <span>清除</span>
+               <i class="delete icon"></i>
+		    </a> 
+        </div>
+    </div>
+    <h3 class="ui top attached horizontal divider header" style="padding-left: 100px;padding-right: 100px">
+        <i class="product hunt pink icon"></i>
+   
+        商品展示
+    </h3>
+    <div class="ui attached segment">
+        <!-- <span th:text="${param.brand}"></span>
+        <span th:text="${data.number}+1"></span>
+        <span th:if="${param.brand} != null" th:text="${param.brand}"></span> -->
+        <div th:if="${#lists.isEmpty(data.content)}">
+            <img class="ui fluid image" th:src="@{images/not_found.jpg}">
+        </div>
+        <div class="ui four column grid cards stackable">
+
+             <div th:each="obj,stat:${data.content}" class="column">
+                <div class="ui fluid card">
+                   <div class="image">
+                        <div th:unless="${#lists.isEmpty(obj.salePromotionInfors[0].salePromotionValue)}" class="ui gift right icon orange corner label" data-position="top right" th:data-content="${#strings.arrayJoin(obj.salePromotionInfors[0].salePromotionValue,' 。 ')}" data-variation="wide">
+                            <i class="gift icon"></i>
+                        </div>
+                        <img height="430px" width="430px" th:src="@{images/white-image.png}" src="../static/images/white-image.png" th:data-src="${obj.thumbPic[0]}" data-src="../static/images/product.jpg">
+                    </div>
+                    <a class="content">
+                        <div class="description" th:if="${#strings.length(obj.name) > 57}" th:text="${#strings.substring(obj.name,0,57)} + '...'" th:title="${obj.name}">
+                                                                            小米 红米Note5 全网通版 4GB+64GB 魔力蓝 移动联通电信...
+                        </div>
+                        <div class="description" th:if="${#strings.length(obj.name) <= 57}" th:text="${obj.name}" th:title="${obj.name}">
+                                                                            
+                        </div>
+                    </a>
+                    <span class="extra content">
+                        <span class="ui pink header" >
+                            <small>¥</small><big th:text="${#strings.replace(obj.prices[0].priceValue,'.00','')}">999</big>
+                            <div style="float: right">
+                                <div th:text="${obj.ram}" class="ui mini pink horizontal label right" style="margin-right: 0.01em; margin-left: 0.01em">6GB</div>
+                                <div th:text="${obj.rom}" class="ui mini pink horizontal label" style="margin-right: 0.01em; margin-left: 0.01em">128GB</div>
+                                <div th:text="${obj.source}" class="ui mini pink horizontal label" style="margin-right: 0.01em; margin-left: 0.01em">京东</div>
+                            </div>
+                        </span>
+                    </span> 
+                </div>
+            </div>  
+
+
+        </div>
+    </div>
+</div>
+    <div class="ui bottom attached header">
+         <div class="ui two column centered grid">
+            <div class="column centered row">
+                <div class="ui borderless  pagination menu stackable" style="margin-top: 12px;margin-bottom: 12px">
+                    <a th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(page=${data.number}-1,brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}" th:class="${data.number-1>=0}?'ui left labeled pink icon button':'ui left labeled pink icon button disabled'" class="ui left labeled pink icon button">Last Page <i class="left chevron icon"></i> </a>
+                    <a class="item" th:unless="${data.first}" th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(page=0,brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                        1
+                    </a>
+                    <a class="disabled item">
+                        ...
+                    </a>
+                    <a class="item" th:if="${data.number}-3>=0" th:text="${data.number}-2" th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(page=${data.number}-3,brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                                                             当前页-3
+                    </a>
+                    <a class="item" th:if="${data.number}-2>=0" th:text="${data.number}-1" th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(page=${data.number}-2,brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                                                            当前页-2
+                    </a>
+                    <a class="item" th:if="${data.number}-1>=0" th:text="${data.number}" th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(page=${data.number}-1,brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                                                            当前页-1
+                    </a>
+                    <a class="pink active item disabled" th:text="${data.number}+1" style="font-weight: 900">
+                                                             当前页
+                    </a>
+                    <a class="item" th:if="${data.totalPages}>${data.number}+1" th:text="${data.number}+2" th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(page=${data.number}+1,brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                                                             当前页+1
+                    </a>
+                    <a class="item" th:if="${data.totalPages}>${data.number}+2" th:text="${data.number}+3" th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(page=${data.number}+2,brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                                                             当前页+2
+                    </a>
+                    <a class="item" th:if="${data.totalPages}>${data.number}+3" th:text="${data.number}+4" th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(page=${data.number}+3,brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                                                            当前页+2
+                    </a>
+                    <div class="disabled item">
+                        ...
+                    </div>
+                    <a class="item" th:if="${data.totalPages}!=${data.number}+1" th:text="${data.totalPages}" th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(page=${data.totalPages}-1,brand=${param.brand},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}">
+                                                            最后一页
+                    </a>
+                    <a th:href="@{/phoneToPrice?page={page}&brand={brand}&ram={ram}&rom={rom}&keyword={keyword}(page=${data.number}+1,brand=${param.brand},ram=${param.ram},rom=${param.rom},keyword=${param.keyword})}" th:class="${data.number!=data.totalPages-1}?'ui right labeled pink icon button':'ui right labeled pink icon button disabled'" class="ui right labeled pink icon button">Next Page <i class="right chevron icon"></i> </a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+</div>
+
+<footer style="margin-top: 50px">
+    <div class="ui vertical pink footer segment" style="padding-top: 50px">
+        <div class="ui center aligned container">
+            <div class="ui stackable divided grid">
+                <!--各种介绍-->
+                <div class="three wide column">
+                    <img src="../static/images/ercode.png" th:src="@{images/ercode.png}" height="120" width="120" class="ui centered">
+                </div>
+                <div class="three wide column">
+                    <h4 class="ui header pink">联系我</h4>
+                    <div class="ui link list">
+                        <a href="#" class="item">Tel：135386285xx</a>
+                        <a href="#" class="item">QQ:18339889X</a>
+                        <a href="#" class="item">Git:JessieChn</a>
+                        <a href="#" class="item">more information</a>
+                    </div>
+                </div>
+                <div class="three wide column">
+                    <h4 class="ui header pink">商务合作</h4>
+                    <div class="ui link list">
+                        <a href="#" class="item">广告承接</a>
+                        <a href="#" class="item">竞价排名</a>
+                        <a href="#" class="item">数据出售</a>
+                        <a href="#" class="item">more information</a>
+                    </div>
+                </div>
+                <div class="three wide column">
+                    <h4 class="ui  header pink">Chizhangli</h4>
+                    <div class="ui  link list">
+                        <a href="#" class="item">独立开发者</a>
+                        <a href="#" class="item">喜欢java和python</a>
+                        <a href="#" class="item">没事会写写爬虫</a>
+                        <a href="#" class="item">正在搜寻简易编程的最短路径</a>
+                    </div>
+                </div>
+                <div class="four wide column">
+                    <h4 class="ui pink header">关于我</h4>
+                    <p class="ui" style="opacity: 0.5">来自东莞理工学院的一名大四学生，喜欢java和python，正在搜寻简易编程的最短路径，闲下来的时候也会写写网络爬虫，而这个项目是我的一个side project。</p>
+                </div>
+            </div>
+            <!--低下那条线-->
+            <div class="ui section divider"></div>
+            <div class="ui horizontal small divided link list">
+                <a class="item" href="#">Site Map</a>
+                <a class="item" href="#">Contact Us</a>
+                <a class="item" href="#">Terms and Conditions</a>
+                <a class="item" href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+<bottom>
+
+</bottom>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.js" data-filtered="filtered"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function(){
+    	$('.search.icon').click(function(){
+    		search_value = $('input.prompt').val()
+    		//alert(search_value)
+    		//var keyword = [[${param.keyword}]] //这样可以获得param.keyword
+    		//window.location.href= 'http://www.baidu.com'
+    		//在JS中不能这么写了  @{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${obj},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}
+    		window.location.href= '/phoneToPrice?keyword='+ search_value 
+    	})
+    })
+    $('#dropdown-one')
+        .dropdown()
+    ;
+    $('#dropdown-two')
+        .dropdown()
+    ;
+    $('#dropdown-three')
+        .dropdown()
+    ;
+    $('#dropdown-four')
+        .dropdown()
+    ;
+    $('.ui.attached.segment img')
+        .visibility({
+            type       : 'image',
+            transition : 'fade in',
+            duration   : 1000
+        })
+    ;
+    $('.gift').popup();
+</script>
+</body>
+</html>
