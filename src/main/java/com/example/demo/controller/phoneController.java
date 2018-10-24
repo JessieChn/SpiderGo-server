@@ -121,6 +121,12 @@ public class phoneController {
         return modelAndView;
     }
     
+    @GetMapping("/phoneDetail")
+    public ModelAndView listInformation3() {
+        ModelAndView modelAndView = new ModelAndView("detail");
+        return modelAndView;
+    }
+    
     private Map<String,List<String>> getSelectorLine(String collectionName, String columnName,int limit){
        
       //获得brands

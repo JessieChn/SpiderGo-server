@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>详情页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css"
+          data-filtered="filtered">
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{css/me.css}">
+    <link rel="stylesheet" href="../static/css/animate.css" th:href="@{css/animate.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
+</head>
+<body>
+<!-- 引入segment -->
+<div th:insert="header_footer :: logo"></div>
+<div th:insert="header_footer :: nav"></div>
+<div class="ui container">
+    <div class="ui vertical pink" style="padding-top: 25px">
+        <div class="ui container">
+            <div class="ui stackable divided grid">
+                <div class="six wide column">   
+                    <div class="swiper-container">
+					    <div class="swiper-wrapper">
+					        <div class="swiper-slide"><img src="../static/images/product.jpg" th:src="@{images/product.jpg}" width="100%" alt=""></div>
+					        <div class="swiper-slide"><img src="../static/images/product2.jpg" th:src="@{images/product2.jpg}" width="100%" alt=""></div>
+					        <div class="swiper-slide"><img src="../static/images/product3.jpg" th:src="@{images/product3.jpg}" width="100%" alt=""></div>
+					    </div>
+					    <!-- 如果需要分页器 -->
+					    <div class="swiper-pagination"></div>
+					    <div class="swiper-button-prev"></div>
+					    <div class="swiper-button-next"></div>
+					    <!-- 如果需要滚动条 -->
+					    <!--<div class="swiper-scrollbar"></div>-->
+					</div>
+                </div>
+                <div class="nine wide column" style="padding-left:50px; padding-top:20px;">
+                    <div class="ui items">
+                        <div class="item">
+	                       <h4 class="ui black header" style="font-size:17px">小米 红米Note5 全网通版 4GB+64GB 黑色 移动联通电信4G手机 双卡双待 拍照手机</h4>
+	                    </div>
+	                    <div class="ui divider"></div>
+	                     <div class="item">
+	                    <p class="ui" style="opacity: 0.5">红米国民品质，拍照专家 / AI双摄/5.99”全面屏 / 4000mAh大电量 / 超过10000 项严苛检测</p>
+	                    </div>
+	                    <div class="ui divider"></div>
+	                     <div class="item">
+		                    <div class="middle aligned content">
+		                         <span class="ui pink header" style="font-size:25px;">¥</span>
+		                         <span class="ui pink header" style="font-size:50px;">198</span>
+		                         
+		                    </div>
+		                    <span style="opacity: 0.5">更新日期：2018-10-24</span>
+	                    </div>
+	                    <div class="ui divider"></div>
+	                    <div class="item">
+	                       <div>
+	                           <div style="opacity: 0.5">
+	                               活动：
+	                           </div>
+	                           <div style="padding-left:35px;">
+		                           <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
+		                           <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
+		                           <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
+		                           <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
+	                           </div>
+	                           <!-- <a style="opacity: 0.8" class="ui mini red label">[换购] 购买1件可优惠换购热销商品  </a>
+	                           <a style="opacity: 0.8" class="ui pink label">[换购] 购买1件可优惠换购热销商品</a>
+	                           <a style="opacity: 0.8" class="ui pink label">[换购] 购买1件可优惠换购热销商品</a>
+	                           <a style="opacity: 0.8" class="ui pink label">[换购] 购买1件可优惠换购热销商品</a>
+	                           <a style="opacity: 0.8" class="ui pink label">[换购] 购买1件可优惠换购热销商品</a>
+	                           <a style="opacity: 0.8" class="ui pink label">粉色</a> -->
+	                       </div>
+	                    </div>
+	                    <div class="ui divider"></div>
+	                    <div class="item">
+                           <div>
+                               <div style="opacity: 0.5">
+                                   评价：
+                               </div>
+                               <div style="padding-left:35px; opacity: 0.8">
+                                   <div class="ui pink image label" style="margin-top: 5px;">
+						               <img src="images/好评.png">
+						                  <span>21000</span>
+						           </div>
+						           <div class="ui orange image label" style="margin-top: 5px;">
+                                       <img src="images/一般.png">
+                                          <span>300</span>
+                                   </div>
+                                   <div class="ui teal image label" style="margin-top: 5px;">
+                                       <img src="images/差评.png">
+                                          <span>300</span>
+                                   </div>
+                                   <div class="ui teal image label" style="margin-top: 5px;">
+                                       <img src="images/比例.png">
+                                          <span>96%</span>
+                                   </div>
+                               </div>
+                           </div>
+                        </div>
+	                    
+	                    
+	                    <div class="ui divider"></div>
+                        <div class="item">
+                           <div>
+                               <div style="opacity: 0.5">
+                                   选购热点：
+                               </div>
+                               <div style="padding-left:35px;">
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini red  horizontal label">人工智能</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini red  horizontal label">人脸识别 </div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini red  horizontal label">快速充电 </div>
+                               </div>
+                           </div>
+                        </div>
+                        
+                        <div class="ui divider"></div>
+                        <div class="item">
+                           <div>
+                               <div style="opacity: 0.5">
+                                   印象标签：
+                               </div>
+                               <div style="padding-left:35px;">
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极40</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">清晰度高22</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">帅得不行11</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极9</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">清晰度高11</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">帅得不行2</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey horizontal label">流畅至5</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">清晰度高6 </div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">帅得不行55</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极1002</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey horizontal label">清晰度高 33</div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">帅得不行 22</div>
+                               </div>
+                           </div>
+                        </div>
+	                </div>
+	                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui centered grid">
+        <h3 style="margin-top:40px;" class="ui horizontal divider header">
+            <i class="video pink icon"></i>
+            Video
+        </h3>
+        <div class="tablet fourteen wide computer column">
+	        <video width="100%" controls="controls" src="https://jdvodoss.jcloudcache.com/vodtransgzp1251412368/7447398155075804237/v.f30.mp4?dockingId=cc5df8d5-25b2-486c-8592-0b0bd8699671&storageSource=3">
+	        </video>
+        </div>
+    </div>
+        <div class="ui centered grid">
+        <h3 style="margin-top:12px;" class="ui horizontal divider header">
+            <i class="pink info circle icon"></i>
+            Description
+        </h3>
+        <div class="tablet fourteen wide computer column">
+            <table class="ui pink table" style="text-align: center;">
+			  <thead>
+			    <tr>
+				    <th style="width: 15%">Food</th>
+				    <td>123</td>
+				    <th style="width: 15%">Food</th>
+                    <td>123</td>
+			     </tr>
+			     <tr>
+                    <th style="width: 15%">Food</th>
+                    <td>123</td>
+                    <th style="width: 15%">Food</th>
+                    <td>123</td>
+                 </tr>
+                 <tr>
+                    <th style="width: 15%">Food</th>
+                    <td>123</td>
+                    <th style="width: 15%">Food</th>
+                    <td>123</td>
+                 </tr>
+                 <tr>
+                    <th style="width: 15%">Food</th>
+                    <td>123</td>
+                    <th style="width: 15%">Food</th>
+                    <td>123</td>
+                 </tr>
+                 <tr>
+                    <th style="width: 15%">Food</th>
+                    <td>123</td>
+                    <th style="width: 15%">Food</th>
+                    <td>123</td>
+                 </tr>
+			  </thead>
+			  <tbody>
+			  </tbody>
+			</table>
+        </div>
+    </div>
+</div>
+<div th:insert="header_footer :: footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.js" data-filtered="filtered"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('.search.icon').click(function(){
+        search_value = $('input.prompt').val()
+        //alert(search_value)
+        //var keyword = [[${param.keyword}]] //这样可以获得param.keyword
+        //window.location.href= 'http://www.baidu.com'
+        //在JS中不能这么写了  @{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${obj},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}
+        window.location.href= '/phoneToPrice?keyword='+ search_value 
+    })
+})
+</script>
+<script>
+    var mySwiper = new Swiper ('.swiper-container', {
+        direction: 'horizontal', // 垂直切换选项
+        loop: true, // 循环模式选项
+
+        // 如果需要分页器
+        pagination: {
+            el: '.swiper-pagination',
+        },
+
+        // 如果需要前进后退按钮
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+
+ /*       // 如果需要滚动条
+        scrollbar: {
+            el: '.swiper-scrollbar',
+        },*/
+    })
+</script>
+</body>
+</html>
