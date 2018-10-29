@@ -10,22 +10,22 @@
     <div class="ui text borderless menu small">
         <div class="m-hide">
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <img class="animated bounce" height="83" width="130" th:src="@{images/logo.png}" src="../static/images/logo.png">
+            <img class="animated bounce" height="83" width="130" th:src="@{/images/logo.png}" src="../static/images/logo.png">
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
         <div class="m-display">
-            <img height="40" width="65" th:src="@{images/logo.png}" src="../static/images/logo.png">
+            <img height="40" width="65" th:src="@{/images/logo.png}" src="../static/images/logo.png">
         </div>
         <div class="ui label item m-hide">
-            <img th:src="@{images/bug.png}" src="../static/images/bug.png">
+            <img th:src="@{/images/bug.png}" src="../static/images/bug.png">
             <h6 th:text="#{app.futher.name}">&nbsp;爬取各大网商</h6>
         </div>
         <div class="ui label item m-hide">
-            <img th:src="@{images/analyse.png}" src="../static/images/analyse.png">
+            <img th:src="@{/images/analyse.png}" src="../static/images/analyse.png">
             <h6 th:text="#{app.futher.name2}">&nbsp;分析价格趋势</h6>
         </div>
         <div class="ui label item m-hide">
-            <img src="images/money.png">
+            <img th:src="@{/images/money.png}" src="images/money.png">
             <!-- <h6>&nbsp;[[#{app.futher.name3}]]</h6> -->
             <h6 th:text="#{app.futher.name3}">&nbsp;省钱省力省心</h6>
         </div>
@@ -121,7 +121,7 @@
             <div class="ui stackable divided grid">
                 <!--各种介绍-->
                 <div class="three wide column">
-                    <img src="../static/images/ercode.png" th:src="@{images/ercode.png}" height="120" width="120" class="ui centered">
+                    <img src="../static/images/ercode.png" th:src="@{/images/ercode.png}" height="120" width="120" class="ui centered">
                 </div>
                 <div class="three wide column">
                     <h4 class="ui header pink">联系我</h4>

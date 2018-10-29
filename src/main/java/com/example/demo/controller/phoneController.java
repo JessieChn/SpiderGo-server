@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.naming.spi.DirStateFactory.Result;
 
@@ -28,12 +29,15 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.entity.FilterParam;
+import com.example.demo.entity.Impresses;
+import com.example.demo.entity.Opinions;
 import com.example.demo.entity.Phone;
 import com.example.demo.entity.PhoneDisplay;
 import com.example.demo.entity.PhoneListInfor;
@@ -41,6 +45,8 @@ import com.example.demo.entity.Prices;
 import com.example.demo.entity.Prices2;
 import com.example.demo.entity.SalePromotion;
 import com.example.demo.entity.SalePromotionInfor;
+import com.example.demo.repository.ImpressesRepository;
+import com.example.demo.repository.OpinionRepository;
 import com.example.demo.repository.PhoneRepository;
 import com.example.demo.repository.PriceRepository;
 import com.example.demo.repository.SalePromotionRepository;
@@ -57,6 +63,10 @@ public class phoneController {
     private SalePromotionRepository salePromotionRepository;
     @Autowired
     private PriceRepository priceRepository;
+    @Autowired
+    private OpinionRepository opinionRepository;
+    @Autowired
+    private ImpressesRepository impressesRepository;
     
     private MongoOperations mongoOperations = new MongoTemplate(new MongoClient(), "jd3");
     
@@ -121,11 +131,66 @@ public class phoneController {
         return modelAndView;
     }
     
-    @GetMapping("/phoneDetail")
-    public ModelAndView listInformation3() {
+    @GetMapping("/phoneDetail/{id}")
+    public ModelAndView listInformation3(@PathVariable String id) {
         ModelAndView modelAndView = new ModelAndView("detail");
+        System.out.println(id);
+        
+        Phone phone = phoneRepository.findById(id).get();
+        System.out.println(phone);
+        modelAndView.addObject("phone", phone);
+        
+        SalePromotion salePromotion = salePromotionRepository.findByIdUnity(id);
+        System.out.println(salePromotion);
+        modelAndView.addObject("salePromotion", salePromotion);
+        
+        Prices2 prices = priceRepository.findByIdUnity(id);
+        System.out.println(prices);
+        modelAndView.addObject("prices", prices);
+        
+        Opinions opinions = opinionRepository.findByIdUnity(id);
+        System.out.println(opinions);
+        modelAndView.addObject("opinions", opinions);
+        
+        Impresses impresses = impressesRepository.findByIdUnity(id);
+        System.out.println(impresses);
+        modelAndView.addObject("impresses", impresses);
+        
         return modelAndView;
     }
+    
+    @GetMapping("/phoneDetailResp/{id}")
+    @ResponseBody
+    public Map<String, Object> listInformation4(@PathVariable String id) {
+        Map<String, Object> map = new HashMap<String,Object>(); 
+        System.out.println(id);
+        
+        Phone phone = phoneRepository.findById(id).get();
+        System.out.println(phone);
+        map.put("phone", phone);
+        
+        SalePromotion salePromotion = salePromotionRepository.findByIdUnity(id);
+        System.out.println(salePromotion);
+        map.put("salePromotion", salePromotion);
+        
+        Prices2 prices = priceRepository.findByIdUnity(id);
+        System.out.println(prices);
+        map.put("prices", prices);
+        
+        Opinions opinions = opinionRepository.findByIdUnity(id);
+        System.out.println(opinions);
+        map.put("opinions", opinions);
+        
+        Impresses impresses = impressesRepository.findByIdUnity(id);
+        System.out.println(impresses);
+        map.put("impresses", impresses);
+        
+        return map;
+    }
+    
+    
+    
+    
     
     private Map<String,List<String>> getSelectorLine(String collectionName, String columnName,int limit){
        

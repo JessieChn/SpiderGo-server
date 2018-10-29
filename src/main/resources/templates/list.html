@@ -156,7 +156,7 @@
                         <div th:unless="${#lists.isEmpty(obj.salePromotionInfors[0].salePromotionValue)}" class="ui gift right icon orange corner label" data-position="top right" th:data-content="${#strings.arrayJoin(obj.salePromotionInfors[0].salePromotionValue,' 。 ')}" data-variation="wide">
                             <i class="gift icon"></i>
                         </div>
-                        <img height="430px" width="430px" th:src="@{images/white-image.png}" src="../static/images/white-image.png" th:data-src="${obj.thumbPic[0]}" data-src="../static/images/product.jpg">
+                        <img height="430px" width="430px" th:src="@{/images/white-image.png}" src="../static/images/white-image.png" th:data-src="${obj.thumbPic[0]}" data-src="../static/images/product.jpg">
                     </div>
                     <a class="content">
                         <div class="description" th:if="${#strings.length(obj.name) > 57}" th:text="${#strings.substring(obj.name,0,57)} + '...'" th:title="${obj.name}">

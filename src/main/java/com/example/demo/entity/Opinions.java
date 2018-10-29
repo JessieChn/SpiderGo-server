@@ -6,12 +6,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection="prices")
-public class Prices2 {
+@Document(collection="opinions")
+public class Opinions {
     @Id
     private String _id;
     private String id;
-    private PriceInfor[] prices;
+    @Field("opinion_value")
+    private OpinionValue[] opinionValues;
     public String get_id() {
         return _id;
     }
@@ -24,14 +25,14 @@ public class Prices2 {
     public void setId(String id) {
         this.id = id;
     }
-    public PriceInfor[] getPrices() {
-        return prices;
+    public OpinionValue[] getOpinionValues() {
+        return opinionValues;
     }
-    public void setPrices(PriceInfor[] prices) {
-        this.prices = prices;
+    public void setOpinionValues(OpinionValue[] opinionValues) {
+        this.opinionValues = opinionValues;
     }
     @Override
     public String toString() {
-        return "Prices2 [_id=" + _id + ", id=" + id + ", prices=" + Arrays.toString(prices) + "]";
+        return "Opinions [_id=" + _id + ", id=" + id + ", opinionValues=" + Arrays.toString(opinionValues) + "]";
     }
 }

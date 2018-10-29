@@ -1,17 +1,19 @@
 package com.example.demo.entity;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection="prices")
-public class Prices2 {
+@Document(collection="impresses")
+public class Impresses {
     @Id
     private String _id;
     private String id;
-    private PriceInfor[] prices;
+    @Field("impress_value")
+    private Map<String, String>[] impressValue;
     public String get_id() {
         return _id;
     }
@@ -24,14 +26,17 @@ public class Prices2 {
     public void setId(String id) {
         this.id = id;
     }
-    public PriceInfor[] getPrices() {
-        return prices;
+    public Map<String, String>[] getImpressValue() {
+        return impressValue;
     }
-    public void setPrices(PriceInfor[] prices) {
-        this.prices = prices;
+    public void setImpressValue(Map<String, String>[] impressValue) {
+        this.impressValue = impressValue;
     }
     @Override
     public String toString() {
-        return "Prices2 [_id=" + _id + ", id=" + id + ", prices=" + Arrays.toString(prices) + "]";
+        return "Impresses [_id=" + _id + ", id=" + id + ", impressValue=" + Arrays.toString(impressValue) + "]";
     }
+    
+    
+
 }

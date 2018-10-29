@@ -8,8 +8,8 @@
     <title>详情页</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css"
           data-filtered="filtered">
-    <link rel="stylesheet" href="../static/css/me.css" th:href="@{css/me.css}">
-    <link rel="stylesheet" href="../static/css/animate.css" th:href="@{css/animate.css}">
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+    <link rel="stylesheet" href="../static/css/animate.css" th:href="@{/css/animate.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
 </head>
@@ -18,15 +18,16 @@
 <div th:insert="header_footer :: logo"></div>
 <div th:insert="header_footer :: nav"></div>
 <div class="ui container">
+    <!-- <div th:text="${phone.url}"></div> -->
     <div class="ui vertical pink" style="padding-top: 25px">
         <div class="ui container">
             <div class="ui stackable divided grid">
                 <div class="six wide column">   
                     <div class="swiper-container">
 					    <div class="swiper-wrapper">
-					        <div class="swiper-slide"><img src="../static/images/product.jpg" th:src="@{images/product.jpg}" width="100%" alt=""></div>
-					        <div class="swiper-slide"><img src="../static/images/product2.jpg" th:src="@{images/product2.jpg}" width="100%" alt=""></div>
-					        <div class="swiper-slide"><img src="../static/images/product3.jpg" th:src="@{images/product3.jpg}" width="100%" alt=""></div>
+					        <div th:each="obj,stat:${phone.thumbPic}" class="swiper-slide"><img src="../static/images/product.jpg" th:src="@{/images/white-image.png}" th:data-src="${obj}" data-src="../static/images/product.jpg" width="100%" alt=""></div>
+<!-- 					    <div class="swiper-slide"><img src="../static/images/product2.jpg" th:src="@{/images/product2.jpg}" width="100%" alt=""></div>
+					        <div class="swiper-slide"><img src="../static/images/product3.jpg" th:src="@{/images/product3.jpg}" width="100%" alt=""></div> -->
 					    </div>
 					    <!-- 如果需要分页器 -->
 					    <div class="swiper-pagination"></div>
@@ -39,20 +40,19 @@
                 <div class="nine wide column" style="padding-left:50px; padding-top:20px;">
                     <div class="ui items">
                         <div class="item">
-	                       <h4 class="ui black header" style="font-size:17px">小米 红米Note5 全网通版 4GB+64GB 黑色 移动联通电信4G手机 双卡双待 拍照手机</h4>
+	                       <h4 th:text="${phone.name}" class="ui black header" style="font-size:17px">小米 红米Note5 全网通版 4GB+64GB 黑色 移动联通电信4G手机 双卡双待 拍照手机</h4>
 	                    </div>
 	                    <div class="ui divider"></div>
-	                     <div class="item">
-	                    <p class="ui" style="opacity: 0.5">红米国民品质，拍照专家 / AI双摄/5.99”全面屏 / 4000mAh大电量 / 超过10000 项严苛检测</p>
+	                    <div class="item">
+	                       <p class="ui" style="opacity: 0.5">红米国民品质，拍照专家 / AI双摄/5.99”全面屏 / 4000mAh大电量 / 超过10000 项严苛检测</p>
 	                    </div>
 	                    <div class="ui divider"></div>
 	                     <div class="item">
 		                    <div class="middle aligned content">
 		                         <span class="ui pink header" style="font-size:25px;">¥</span>
-		                         <span class="ui pink header" style="font-size:50px;">198</span>
-		                         
+		                         <span th:text="${prices.prices[0].priceValue}" class="ui pink header" style="font-size:50px;">1349</span>
 		                    </div>
-		                    <span style="opacity: 0.5">更新日期：2018-10-24</span>
+		                    <span style="opacity: 0.5">更新日期：[[${prices.prices[0].date}]]</span>
 	                    </div>
 	                    <div class="ui divider"></div>
 	                    <div class="item">
@@ -61,17 +61,11 @@
 	                               活动：
 	                           </div>
 	                           <div style="padding-left:35px;">
+		                           <div th:each="obj,stat:${salePromotion.salePromotion[0].salePromotionValue}" th:text="${obj}" style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
+<!-- 		                       <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
 		                           <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
-		                           <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
-		                           <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
-		                           <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div>
+		                           <div style="opacity: 0.8; margin-top:3px;" class="ui mini pink horizontal label">[换购] 购买1件可优惠换购热销商品 </div> -->
 	                           </div>
-	                           <!-- <a style="opacity: 0.8" class="ui mini red label">[换购] 购买1件可优惠换购热销商品  </a>
-	                           <a style="opacity: 0.8" class="ui pink label">[换购] 购买1件可优惠换购热销商品</a>
-	                           <a style="opacity: 0.8" class="ui pink label">[换购] 购买1件可优惠换购热销商品</a>
-	                           <a style="opacity: 0.8" class="ui pink label">[换购] 购买1件可优惠换购热销商品</a>
-	                           <a style="opacity: 0.8" class="ui pink label">[换购] 购买1件可优惠换购热销商品</a>
-	                           <a style="opacity: 0.8" class="ui pink label">粉色</a> -->
 	                       </div>
 	                    </div>
 	                    <div class="ui divider"></div>
@@ -82,40 +76,39 @@
                                </div>
                                <div style="padding-left:35px; opacity: 0.8">
                                    <div class="ui pink image label" style="margin-top: 5px;">
-						               <img src="images/好评.png">
-						                  <span>21000</span>
+						               <img src="/images/好评.png">
+						                  <span th:text="${opinions.opinionValues[0].highNumber}">21000</span>
 						           </div>
 						           <div class="ui orange image label" style="margin-top: 5px;">
-                                       <img src="images/一般.png">
-                                          <span>300</span>
+                                       <img src="/images/一般.png">
+                                          <span th:text="${opinions.opinionValues[0].mediumNumber}">300</span>
                                    </div>
                                    <div class="ui teal image label" style="margin-top: 5px;">
-                                       <img src="images/差评.png">
-                                          <span>300</span>
+                                       <img src="/images/差评.png">
+                                          <span th:text="${opinions.opinionValues[0].lowNumber}">300</span>
                                    </div>
                                    <div class="ui teal image label" style="margin-top: 5px;">
-                                       <img src="images/比例.png">
-                                          <span>96%</span>
+                                       <img src="/images/比例.png">
+                                          <span th:text="${opinions.opinionValues[0].score}">96%</span>
                                    </div>
                                </div>
                            </div>
                         </div>
 	                    
 	                    
-	                    <div class="ui divider"></div>
-                        <div class="item">
+	                    <div class="ui divider" th:unless="${#lists.isEmpty(phone.hotSpot)}"></div>
+                        <div class="item" th:unless="${#lists.isEmpty(phone.hotSpot)}">
                            <div>
                                <div style="opacity: 0.5">
                                    选购热点：
                                </div>
                                <div style="padding-left:35px;">
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini red  horizontal label">人工智能</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini red  horizontal label">人脸识别 </div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini red  horizontal label">快速充电 </div>
+                                   <div th:each="obj,stat:${phone.hotSpot}" th:text="${obj}" style="opacity: 0.6; margin-top:3px;" class="ui mini red  horizontal label">人工智能</div>
+<!--                               <div style="opacity: 0.6; margin-top:3px;" class="ui mini red  horizontal label">人脸识别 </div>
+                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini red  horizontal label">快速充电 </div> -->
                                </div>
                            </div>
                         </div>
-                        
                         <div class="ui divider"></div>
                         <div class="item">
                            <div>
@@ -123,18 +116,7 @@
                                    印象标签：
                                </div>
                                <div style="padding-left:35px;">
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极40</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">清晰度高22</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">帅得不行11</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极9</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">清晰度高11</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">帅得不行2</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey horizontal label">流畅至5</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">清晰度高6 </div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">帅得不行55</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极1002</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey horizontal label">清晰度高 33</div>
-                                   <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">帅得不行 22</div>
+                                   <div th:each="impress : ${impresses.impressValue[0]}" th:text="${impress}" style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极40</div>
                                </div>
                            </div>
                         </div>
@@ -143,58 +125,81 @@
             </div>
         </div>
     </div>
-    <div class="ui centered grid">
-        <h3 style="margin-top:40px;" class="ui horizontal divider header">
+    <div th:if="${phone.videoUrl} != '暂无信息'" class="ui centered grid" style="margin-top:35px;">
+        <h3 class="ui horizontal divider header">
             <i class="video pink icon"></i>
             Video
         </h3>
-        <div class="tablet fourteen wide computer column">
-	        <video width="100%" controls="controls" src="https://jdvodoss.jcloudcache.com/vodtransgzp1251412368/7447398155075804237/v.f30.mp4?dockingId=cc5df8d5-25b2-486c-8592-0b0bd8699671&storageSource=3">
+        <div class="tablet fourteen wide computer column" style="padding: 0 10%; margin-top: 25px;">
+	        <video width="100%" controls="controls" th:src="${phone.videoUrl}" src="https://jdvodoss.jcloudcache.com/vodtransgzp1251412368/7447398155075804237/v.f30.mp4?dockingId=cc5df8d5-25b2-486c-8592-0b0bd8699671&storageSource=3">
 	        </video>
         </div>
     </div>
-        <div class="ui centered grid">
+    <div class="ui centered grid" style="margin-top:35px;">
         <h3 style="margin-top:12px;" class="ui horizontal divider header">
             <i class="pink info circle icon"></i>
             Description
         </h3>
-        <div class="tablet fourteen wide computer column">
-            <table class="ui pink table" style="text-align: center;">
-			  <thead>
-			    <tr>
-				    <th style="width: 15%">Food</th>
-				    <td>123</td>
-				    <th style="width: 15%">Food</th>
-                    <td>123</td>
-			     </tr>
-			     <tr>
-                    <th style="width: 15%">Food</th>
-                    <td>123</td>
-                    <th style="width: 15%">Food</th>
-                    <td>123</td>
-                 </tr>
-                 <tr>
-                    <th style="width: 15%">Food</th>
-                    <td>123</td>
-                    <th style="width: 15%">Food</th>
-                    <td>123</td>
-                 </tr>
-                 <tr>
-                    <th style="width: 15%">Food</th>
-                    <td>123</td>
-                    <th style="width: 15%">Food</th>
-                    <td>123</td>
-                 </tr>
-                 <tr>
-                    <th style="width: 15%">Food</th>
-                    <td>123</td>
-                    <th style="width: 15%">Food</th>
-                    <td>123</td>
-                 </tr>
-			  </thead>
+        <div class="tablet fourteen wide column">
+            <table class="ui pink table" style="text-align: center; margin-top:10px;">
 			  <tbody>
+			     <tr>
+                    <td style="width: 15%; background-color: #F0F0F0">品牌</td>
+                    <td th:text="${phone.brand}" style="width: 35%;">小米(MI)</td>
+                    <td style="width: 15%; background-color: #F0F0F0">型号</td>
+                    <td th:text="${phone.model}" style="width: 35%;">红米Note5</td>
+                 </tr>
+                 <tr>
+                    <td style="width: 15%; background-color: #F0F0F0">运行内存</td>
+                    <td th:text="${phone.ram}">4GB</td>
+                    <td style="width: 15%; background-color: #F0F0F0">机身内存</td>
+                    <td th:text="${phone.rom}">64GB</td>
+                 </tr>
+                 <tr>
+                    <td style="width: 15%; background-color: #F0F0F0">CPU芯片</td>
+                    <td th:text="${phone.cpu}">骁龙636</td>
+                    <td style="width: 15%; background-color: #F0F0F0">屏幕尺寸</td>
+                    <td th:text="${phone.screenSize}">5.99</td>
+                 </tr>
+                <tr>
+                    <td style="width: 15%; background-color: #F0F0F0">分辨率</td>
+                    <td th:text="${phone.resolution}">2160*1080</td>
+                    <td style="width: 15%; background-color: #F0F0F0">是否支持存储卡</td>
+                    <td th:text="${phone.memoryCard}">支持MicroSD（SF）</td>
+                 </tr>
+                 <tr>
+                    <td style="width: 15%; background-color: #F0F0F0">存储卡扩展</td>
+                    <td th:text="${phone.maxMemSup}">128GB</td>
+                    <td style="width: 15%; background-color: #F0F0F0">指纹解锁</td>
+                    <td th:text="${phone.figer}">支持</td>
+                 </tr>
+                 <tr>
+                    <td style="width: 15%; background-color: #F0F0F0">商品清单</td>
+                    <td  th:text="${phone.packList}">暂无信息</td>
+                    <td style="width: 15%; background-color: #F0F0F0">电池毫安数</td>
+                    <td  th:text="${phone.battery}">4000mAh(typ)/3900mAh(min)</td>
+                 </tr>
+                 <tr>
+                    <td style="width: 15%; background-color: #F0F0F0">前置摄像头</td>
+                    <td th:text="${phone.fCamera}">1300万像素</td>
+                    <td style="width: 15%; background-color: #F0F0F0">后置摄像头</td>
+                    <td th:text="${phone.rCamera}">其他;1200+500万像素</td>
+                 </tr> 
 			  </tbody>
 			</table>
+        </div>
+    </div>
+    <div class="ui centered grid" style="margin-top:35px;">
+        <h3 style="margin-top:12px;" class="ui horizontal divider header">
+            <i class="pink picture circle icon"></i>
+            Picture
+        </h3>
+        <div class="tablet sixteen wide column" style="margin-top:10px;">
+            <img th:each="obj,stat:${phone.detailUrl}" th:data-src="${obj}"  class="ui centered image">
+<!--        <img class="ui centered image" src="https://img30.360buyimg.com/sku/jfs/t17704/346/895364005/399844/4afead79/5aafe02fN6c00dd75.jpg">
+            <img class="ui centered image" src="https://img30.360buyimg.com/sku/jfs/t19330/244/903546884/220716/925cb915/5aafe02fNf957d947.jpg">
+            <img class="ui centered image" src="https://img30.360buyimg.com/sku/jfs/t14479/42/2630517723/318389/dffa673f/5aafe02fN5a013c0d.jpg">
+             -->
         </div>
     </div>
 </div>
@@ -236,6 +241,14 @@ $(document).ready(function(){
             el: '.swiper-scrollbar',
         },*/
     })
+    
+    $('img')
+    .visibility({
+        type       : 'image',
+        transition : 'fade in',
+        duration   : 1000
+    })
+;
 </script>
 </body>
 </html>
