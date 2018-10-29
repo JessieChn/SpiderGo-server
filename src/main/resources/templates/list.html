@@ -156,9 +156,9 @@
                         <div th:unless="${#lists.isEmpty(obj.salePromotionInfors[0].salePromotionValue)}" class="ui gift right icon orange corner label" data-position="top right" th:data-content="${#strings.arrayJoin(obj.salePromotionInfors[0].salePromotionValue,' 。 ')}" data-variation="wide">
                             <i class="gift icon"></i>
                         </div>
-                        <img height="430px" width="430px" th:src="@{/images/white-image.png}" src="../static/images/white-image.png" th:data-src="${obj.thumbPic[0]}" data-src="../static/images/product.jpg">
+                        <img class="img_href" th:data-href="${obj._id}" height="430px" width="430px" th:src="@{/images/white-image.png}" src="../static/images/white-image.png" th:data-src="${obj.thumbPic[0]}" data-src="../static/images/product.jpg">
                     </div>
-                    <a class="content">
+                    <a th:href="'/phoneDetail/' + ${obj._id}" href="/phoneDetail/jd100000322417" class="content">
                         <div class="description" th:if="${#strings.length(obj.name) > 57}" th:text="${#strings.substring(obj.name,0,57)} + '...'" th:title="${obj.name}">
                                                                             小米 红米Note5 全网通版 4GB+64GB 魔力蓝 移动联通电信...
                         </div>
@@ -244,6 +244,11 @@
     		//在JS中不能这么写了  @{/phoneToPrice?page=0&brand={brand}&ram={ram}&rom={rom}&hotSpot={hotSpot}&keyword={keyword}(brand=${obj},ram=${param.ram},rom=${param.rom},hotSpot=${param.hotSpot},keyword=${param.keyword})}
     		window.location.href= '/phoneToPrice?keyword='+ search_value 
     	})
+    	
+        $('.img_href').click(function(){
+            href_value = $(this).attr('data-href')
+            window.location.href= '/phoneDetail/'+ href_value
+        })
     })
     $('#dropdown-one')
         .dropdown()

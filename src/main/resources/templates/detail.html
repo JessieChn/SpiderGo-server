@@ -195,7 +195,7 @@
             Picture
         </h3>
         <div class="tablet sixteen wide column" style="margin-top:10px;">
-            <img th:each="obj,stat:${phone.detailUrl}" th:data-src="${obj}"  class="ui centered image">
+            <img th:each="obj,stat:${phone.detailUrl}" th:src="@{/images/white-image.png}" src="../static/images/white-image.png" th:data-src="${obj}"  class="ui centered image">
 <!--        <img class="ui centered image" src="https://img30.360buyimg.com/sku/jfs/t17704/346/895364005/399844/4afead79/5aafe02fN6c00dd75.jpg">
             <img class="ui centered image" src="https://img30.360buyimg.com/sku/jfs/t19330/244/903546884/220716/925cb915/5aafe02fNf957d947.jpg">
             <img class="ui centered image" src="https://img30.360buyimg.com/sku/jfs/t14479/42/2630517723/318389/dffa673f/5aafe02fN5a013c0d.jpg">
