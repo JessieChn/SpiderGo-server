@@ -12,30 +12,94 @@
     <link rel="stylesheet" href="../static/css/animate.css" th:href="@{/css/animate.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
+    <style type="text/css">
+            .swiper-container {
+      width: 100%;
+      height: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .swiper-slide {
+      background-size: cover;
+      background-position: center;
+    }
+    .gallery-top {
+      height: 80%;
+      width: 100%;
+    }
+    .gallery-thumbs {
+      height: 20%;
+      box-sizing: border-box;
+      padding: 10px 0;
+    }
+    .gallery-thumbs .swiper-slide {
+      height: 100%;
+      opacity: 0.4;
+    }
+    .gallery-thumbs .swiper-slide-thumb-active {
+      opacity: 1;
+    }
+    </style>
 </head>
 <body>
 <!-- 引入segment -->
 <div th:insert="header_footer :: logo"></div>
 <div th:insert="header_footer :: nav"></div>
+
+<div class="ui small icon basic button" style="z-index: 1000; position: fixed; top: 92%; right: 1%;"><i class="angle pink down icon"></i></div>
+<div class="ui popup top left transition hidden vertical icon basic buttons">
+        <button class="ui button"><i class="angle pink down icon"></i></button>
+        <button class="ui button"><i class="video icon"></i></button>
+        <button class="ui button"><i class="info icon"></i></button>
+        <button class="ui button"><i class="picture icon"></i></button>
+        <button class="ui button"><i class="angle up pink icon"></i></button>
+</div>
+
+<div class="fixed_button ui small icon basic button" style="z-index: 1000; position: fixed; top: 92%; right: 1%;"><i class="th list pink icon"></i></div>
+<div class="ui popup top left transition hidden vertical" style="z-index: 1000; position: fixed; top: 92%; right: 1%;">
+    <div class="ui vertical icon menu">
+        <a class="item">
+            <i class="angle pink down icon scroll_to_bottom"></i>
+        </a>
+        <a class="item">
+            <i class="video pink icon scroll_to_video"></i>
+        </a>
+        <a class="item">
+            <i class="info pink icon scroll_to_desc"></i>
+        </a>
+        <a class="item">
+            <i class="picture pink icon scroll_to_pic"></i>
+        </a>
+        <a class="item">
+            <i class="angle up pink icon scroll_to_top"></i>
+        </a>
+    </div>
+</div>
+
 <div class="ui container">
     <!-- <div th:text="${phone.url}"></div> -->
     <div class="ui vertical pink" style="padding-top: 25px">
         <div class="ui container">
             <div class="ui stackable divided grid">
                 <div class="six wide column">   
-                    <div class="swiper-container">
+                    <div class="swiper-container gallery-top">
 					    <div class="swiper-wrapper">
-					        <div th:each="obj,stat:${phone.thumbPic}" class="swiper-slide"><img src="../static/images/product.jpg" th:src="@{/images/white-image.png}" th:data-src="${obj}" data-src="../static/images/product.jpg" width="100%" alt=""></div>
-<!-- 					    <div class="swiper-slide"><img src="../static/images/product2.jpg" th:src="@{/images/product2.jpg}" width="100%" alt=""></div>
-					        <div class="swiper-slide"><img src="../static/images/product3.jpg" th:src="@{/images/product3.jpg}" width="100%" alt=""></div> -->
+					        <div th:each="obj,stat:${phone.thumbPic}" class="swiper-slide">
+					           <img th:src="${obj}" width="100%" alt="">
+					        </div>
 					    </div>
-					    <!-- 如果需要分页器 -->
 					    <div class="swiper-pagination"></div>
-					    <div class="swiper-button-prev"></div>
-					    <div class="swiper-button-next"></div>
-					    <!-- 如果需要滚动条 -->
-					    <!--<div class="swiper-scrollbar"></div>-->
+					    <div class="swiper-button-next swiper-button-blue"></div>
+                        <div class="swiper-button-prev swiper-button-blue"></div>
+                        
 					</div>
+					<div class="swiper-container gallery-thumbs">
+					   <div class="swiper-wrapper">
+                            <div th:each="obj,stat:${phone.thumbPic}" class="swiper-slide">
+                               <img th:src="${obj}"  width="100%" alt="">
+                            </div>
+				        </div>
+				    </div>
                 </div>
                 <div class="nine wide column" style="padding-left:50px; padding-top:20px;">
                     <div class="ui items">
@@ -55,7 +119,7 @@
 		                    <span style="opacity: 0.5">更新日期：[[${prices.prices[0].date}]]</span>
 	                    </div>
 	                    <div class="ui divider"></div>
-	                    <div class="item">
+	                    <div class="item" th:unless="${#lists.isEmpty(salePromotion.salePromotion[0].salePromotionValue)}">
 	                       <div>
 	                           <div style="opacity: 0.5">
 	                               活动：
@@ -68,7 +132,7 @@
 	                           </div>
 	                       </div>
 	                    </div>
-	                    <div class="ui divider"></div>
+	                    <div class="ui divider" th:unless="${#lists.isEmpty(salePromotion.salePromotion[0].salePromotionValue)}"></div>
 	                    <div class="item">
                            <div>
                                <div style="opacity: 0.5">
@@ -87,7 +151,7 @@
                                        <img src="/images/差评.png">
                                           <span th:text="${opinions.opinionValues[0].lowNumber}">300</span>
                                    </div>
-                                   <div class="ui teal image label" style="margin-top: 5px;">
+                                   <div class="ui yellow image label" style="margin-top: 5px;">
                                        <img src="/images/比例.png">
                                           <span th:text="${opinions.opinionValues[0].score}">96%</span>
                                    </div>
@@ -126,7 +190,7 @@
         </div>
     </div>
     <div th:if="${phone.videoUrl} != '暂无信息'" class="ui centered grid" style="margin-top:35px;">
-        <h3 class="ui horizontal divider header">
+        <h3 class="ui horizontal divider header scroll_video">
             <i class="video pink icon"></i>
             Video
         </h3>
@@ -136,7 +200,7 @@
         </div>
     </div>
     <div class="ui centered grid" style="margin-top:35px;">
-        <h3 style="margin-top:12px;" class="ui horizontal divider header">
+        <h3 style="margin-top:12px;" class="ui horizontal divider header scroll_desc">
             <i class="pink info circle icon"></i>
             Description
         </h3>
@@ -190,7 +254,7 @@
         </div>
     </div>
     <div class="ui centered grid" style="margin-top:35px;">
-        <h3 style="margin-top:12px;" class="ui horizontal divider header">
+        <h3 style="margin-top:12px;" class="ui horizontal divider header scroll_pic">
             <i class="pink picture circle icon"></i>
             Picture
         </h3>
@@ -208,7 +272,34 @@
 <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.js" data-filtered="filtered"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
+<script src="../static/js/swiper.min.js" th:src="@{/js/swiper.min.js}"></script>
 <script>
+var galleryThumbs = new Swiper('.gallery-thumbs', {
+    spaceBetween: 10,
+    slidesPerView: 4,
+    loop: true,
+    freeMode: true,
+    loopedSlides: 5, //looped slides should be the same
+    watchSlidesVisibility: true,
+    watchSlidesProgress: true,
+  });
+  var galleryTop = new Swiper('.gallery-top', {
+    spaceBetween: 10,
+    loop:true,
+    loopedSlides: 5, //looped slides should be the same
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    // 如果需要分页器
+    pagination: {
+        el: '.swiper-pagination',
+    },
+    thumbs: {
+      swiper: galleryThumbs,
+    },
+  });
+
 $(document).ready(function(){
     $('.search.icon').click(function(){
         search_value = $('input.prompt').val()
@@ -220,35 +311,28 @@ $(document).ready(function(){
     })
 })
 </script>
+
+<!-- Initialize Swiper -->
 <script>
-    var mySwiper = new Swiper ('.swiper-container', {
-        direction: 'horizontal', // 垂直切换选项
-        loop: true, // 循环模式选项
-
-        // 如果需要分页器
-        pagination: {
-            el: '.swiper-pagination',
-        },
-
-        // 如果需要前进后退按钮
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-
- /*       // 如果需要滚动条
-        scrollbar: {
-            el: '.swiper-scrollbar',
-        },*/
-    })
+	$('.fixed_button').popup({
+	    on : 'click',
+	})
+    
     
     $('img')
     .visibility({
         type       : 'image',
         transition : 'fade in',
         duration   : 1000
-    })
-;
+    });
+	
+    $(document).ready(function(){
+        $('.scroll_to_top').click(function(){$('html,body').animate({scrollTop: '0px'}, 500);});
+        $('.scroll_to_video').click(function(){$('html,body').animate({scrollTop:$('.scroll_video').offset().top}, 500);});
+        $('.scroll_to_desc').click(function(){$('html,body').animate({scrollTop:$('.scroll_desc').offset().top}, 500);});
+        $('.scroll_to_pic').click(function(){$('html,body').animate({scrollTop:$('.scroll_pic').offset().top}, 500);});
+        $('.scroll_to_bottom').click(function(){$('html,body').animate({scrollTop:$('.footer').offset().top}, 500);}); 
+    });
 </script>
 </body>
 </html>

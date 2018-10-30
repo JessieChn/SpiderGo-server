@@ -128,7 +128,7 @@
 		          <span th:text="${param.hotSpot}">人工智能</span>
 		       <i class="delete icon"></i>
 		    </a>
-		    <a th:if="${#httpServletRequest.getQueryString()!=null && #strings.length(#httpServletRequest.getQueryString())>36}" th:href="@{/phoneToPrice}" class="ui red image label" style="margin-top: 5px;">
+		    <a th:if="${#httpServletRequest.getQueryString()!=null && #strings.length(#httpServletRequest.getQueryString())>41}" th:href="@{/phoneToPrice}" class="ui red image label" style="margin-top: 5px;">
 		       <img src="../static/images/clean.png" th:src="@{images/clean.png}">
                   <!-- <span th:text="${#strings.length(#httpServletRequest.getQueryString())}">清除</span> -->
                   <span>清除</span>
