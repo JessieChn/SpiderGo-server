@@ -48,7 +48,9 @@
         </div>
 
     </div>
+    <div class="ui mini negative message" th:unless="${#strings.isEmpty(message)}" th:text="${message}">用户名和密码错误</div>
 </div>
+
 <nav class="m-display" th:fragment="nav-mobile">
     <div class="ui menu tiny borderless inverted pink stackable " style="padding-top: 0.01em">
         <div class="ui container">

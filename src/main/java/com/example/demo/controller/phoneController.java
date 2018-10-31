@@ -2,18 +2,26 @@ package com.example.demo.controller;
 
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.spi.DirStateFactory.Result;
+import javax.servlet.http.HttpSession;
+import javax.sound.midi.Receiver;
 
 import org.apache.logging.log4j.util.Strings;
 import org.hibernate.validator.cfg.context.ParameterConstraintMappingContext;
+import org.json.JSONException;
 import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,15 +33,19 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.RedisKeyValueAdapter;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.FilterParam;
 import com.example.demo.entity.Impresses;
@@ -45,12 +57,17 @@ import com.example.demo.entity.Prices;
 import com.example.demo.entity.Prices2;
 import com.example.demo.entity.SalePromotion;
 import com.example.demo.entity.SalePromotionInfor;
+import com.example.demo.entity.User;
 import com.example.demo.repository.ImpressesRepository;
 import com.example.demo.repository.OpinionRepository;
 import com.example.demo.repository.PhoneRepository;
 import com.example.demo.repository.PriceRepository;
 import com.example.demo.repository.SalePromotionRepository;
+import com.example.demo.repository.UserRepository;
 import com.fasterxml.jackson.databind.deser.impl.CreatorCandidate.Param;
+import com.github.qcloudsms.SmsSingleSender;
+import com.github.qcloudsms.SmsSingleSenderResult;
+import com.github.qcloudsms.httpclient.HTTPException;
 import com.mongodb.MongoClient;
 import com.mongodb.client.DistinctIterable;
 
@@ -67,6 +84,10 @@ public class phoneController {
     private OpinionRepository opinionRepository;
     @Autowired
     private ImpressesRepository impressesRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
     
     private MongoOperations mongoOperations = new MongoTemplate(new MongoClient(), "jd3");
     
@@ -100,6 +121,101 @@ public class phoneController {
         map.put("data", dataList);
         
         return map;
+    }
+    
+    @GetMapping("/toLogin")
+    public ModelAndView toLogin() {
+        ModelAndView modelAndView = new ModelAndView("login");
+        return modelAndView;
+    }
+    
+    @PostMapping("/login")
+    public String Login(String phone, String password ,HttpSession session, RedirectAttributes attributes) {
+        System.out.println(phone + " " + password);
+        //如果密码等于mysql表中的密码，说明是旧密码，不需要修改密码。
+        //如果jpa在数据库中找不到的会就会返回null
+        User user = userRepository.findByPhoneNumber(phone);
+        System.out.println(user);
+        //如果密码等于redis内存中的验证码，说明是新密码，需要修改mysql数据库中密码。也可能是新用户，直接注册的。
+        //如果redis在内存中找不到的会就会返回null
+        String redisValue = stringRedisTemplate.opsForValue().get(phone);
+        System.out.println(redisValue);
+        if (user != null && password.equals(user.getPassword())) {
+            //如果是旧密码,不修改密码，直接登录成功。
+            beSession(user,session);
+            attributes.addFlashAttribute("message", "欢迎回来，尊敬的用户 : " + phone);
+            return "redirect:/phoneToPrice";
+        }
+        else if(user == null) {
+            //新用户，创建新账号。
+            user = new User();
+            user.setPhoneNumber(phone);
+            user.setPassword(redisValue);
+            user.setCreateTime(new Date());
+            userRepository.save(user);
+            beSession(user,session);
+            attributes.addFlashAttribute("message", "尊敬的新用户 : " + phone + "，您好！");
+            return "redirect:/phoneToPrice";
+        }
+        else if (password.equals(redisValue)) {
+            //是验证码，需要修改密码
+            //user = new User();
+            user.setPhoneNumber(phone);
+            //user.setPassword(redisValue);
+            //user.setCreateTime(new Date());
+            user = userRepository.saveAndFlush(user);
+            beSession(user,session);
+            attributes.addFlashAttribute("message", "欢迎回来，尊敬的用户 : " + phone);
+            return "redirect:/phoneToPrice";
+        }
+        attributes.addFlashAttribute("message", "手机号或密码错误");
+        return "redirect:/toLogin";
+    }
+    
+    private void beSession(User user, HttpSession session) {
+        user.setPassword(null);
+        session.setAttribute("user", user);
+    }
+
+
+/*    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("user");
+        return "redirect:/admin";
+    }*/
+    
+    
+    @PostMapping("/receiverSMS")
+    @ResponseBody
+    public String ReceiverSMS(String phone) {
+        System.out.println(phone);
+        int appid = 1400155268; 
+        String appkey = "9e7873c0a1b3bc1fb8976cfcafb1599e";
+        // 需要发送短信的手机号码
+        String[] phoneNumbers = {"13538628500"};
+        // 短信模板ID，需要在短信应用中申请
+        int templateId = 219697; 
+        // 签名
+        String smsSign = "池章立个人技术经验分享"; 
+        String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 9).toLowerCase();
+        System.out.println(uuid);
+
+        User user = userRepository.findByPhoneNumber(phone);
+        System.out.println(user);
+        stringRedisTemplate.opsForValue().set(phone, uuid,1,TimeUnit.MINUTES);
+        //发送短信
+/*        try {
+            String[] params = {uuid,"1"};
+            SmsSingleSender ssender = new SmsSingleSender(appid, appkey);
+            //send 的参数 1. 0 : 代表普通参数， 2. countrycode 国家代码， 3. 短信的手机号  4. 短信发送的内容， 5和6  扩展内容
+            SmsSingleSenderResult result = ssender.sendWithParam("86", phoneNumbers[0],
+                templateId, params, smsSign, "", "");  
+            System.out.println(result);
+        } catch (Exception e) {
+            return "fail";
+        }*/
+        //用于回调
+        return phone;
     }
     
     @GetMapping("/phoneToPrice")//翻页查询后端代码，完成
