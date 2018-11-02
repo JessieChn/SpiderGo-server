@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.entity.Collection;
 import com.example.demo.entity.FilterParam;
 import com.example.demo.entity.Impresses;
 import com.example.demo.entity.Opinions;
@@ -58,6 +59,7 @@ import com.example.demo.entity.Prices2;
 import com.example.demo.entity.SalePromotion;
 import com.example.demo.entity.SalePromotionInfor;
 import com.example.demo.entity.User;
+import com.example.demo.repository.CollectionRepository;
 import com.example.demo.repository.ImpressesRepository;
 import com.example.demo.repository.OpinionRepository;
 import com.example.demo.repository.PhoneRepository;
@@ -88,6 +90,8 @@ public class phoneController {
     private UserRepository userRepository;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private CollectionRepository collectionRepository;
     
     private MongoOperations mongoOperations = new MongoTemplate(new MongoClient(), "jd3");
     
@@ -135,7 +139,7 @@ public class phoneController {
         //如果密码等于mysql表中的密码，说明是旧密码，不需要修改密码。
         //如果jpa在数据库中找不到的会就会返回null
         User user = userRepository.findByPhoneNumber(phone);
-        System.out.println(user);
+        //System.out.println(user);
         //如果密码等于redis内存中的验证码，说明是新密码，需要修改mysql数据库中密码。也可能是新用户，直接注册的。
         //如果redis在内存中找不到的会就会返回null
         String redisValue = stringRedisTemplate.opsForValue().get(phone);
@@ -161,7 +165,7 @@ public class phoneController {
             //是验证码，需要修改密码
             //user = new User();
             user.setPhoneNumber(phone);
-            //user.setPassword(redisValue);
+            user.setPassword(redisValue);
             //user.setCreateTime(new Date());
             user = userRepository.saveAndFlush(user);
             beSession(user,session);
@@ -184,6 +188,47 @@ public class phoneController {
         return "redirect:/admin";
     }*/
     
+    @PostMapping("/addToColl")
+    @ResponseBody
+    public String addToColl(String id, HttpSession session) {
+        System.out.println(id);
+        if(session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            System.out.println(session.getAttribute("user").toString());
+/*            Collection collection = new Collection();
+            collection.setUser(userRepository.getOne(user.getId()));
+            if(phoneRepository.existsById(id))
+                collection.setPhoneId(id);
+            else 
+                return "fail";
+            collection.setCreateTime(new Date());
+            collectionRepository.save(collection);*/
+            
+        }
+        else {
+            return "fail";
+        }
+        return "success";
+    }
+    
+    @PostMapping("/cancelColl")
+    @ResponseBody
+    public String cancelColl(String id, HttpSession session) {
+        System.out.println(id);
+        if(session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            user = userRepository.getOne(user.getId());
+            System.out.println(user);
+            //System.out.println(user.getCollections());
+            
+
+            
+        }
+        else {
+            return "fail";
+        }
+        return "success";
+    }
     
     @PostMapping("/receiverSMS")
     @ResponseBody
@@ -200,8 +245,9 @@ public class phoneController {
         String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 9).toLowerCase();
         System.out.println(uuid);
 
-        User user = userRepository.findByPhoneNumber(phone);
-        System.out.println(user);
+        //User user = userRepository.findByPhoneNumber(phone);
+        //System.out.println(user);
+        
         stringRedisTemplate.opsForValue().set(phone, uuid,1,TimeUnit.MINUTES);
         //发送短信
 /*        try {

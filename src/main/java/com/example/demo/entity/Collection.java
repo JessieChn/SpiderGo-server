@@ -1,31 +1,27 @@
 package com.example.demo.entity;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 @Entity
-@Table(name = "t_user")
-public class User {
+@Table(name = "t_collection")
+public class Collection {
     @Id
     @GeneratedValue
     private Long id;
-    private String phoneNumber;
-    private String password;
+    private String phoneId;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
+
     
-    public User() {
+    
+    public Collection() {
         
     }
     public Long getId() {
@@ -34,17 +30,11 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhoneId() {
+        return phoneId;
     }
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPhoneId(String phoneId) {
+        this.phoneId = phoneId;
     }
     public Date getCreateTime() {
         return createTime;
@@ -54,10 +44,10 @@ public class User {
     }
     @Override
     public String toString() {
-        return "User [id=" + id + ", phoneNumber=" + phoneNumber + ", password=" + password + ", createTime="
-                + createTime + "]";
+        return "Collection [id=" + id + ", phoneId=" + phoneId + ", createTime=" + createTime + "]";
     }
+
+
     
-    
-    
+
 }

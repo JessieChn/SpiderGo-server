@@ -16,6 +16,31 @@
 <!-- 引入segment -->
 <div th:insert="header_footer :: logo"></div>
 <div th:insert="header_footer :: nav"></div>
+<div class="ui small icon basic button" style="z-index: 1000; position: fixed; top: 92%; right: 1%;"><i class="angle pink down icon"></i></div>
+
+
+<div class="fixed_button ui small icon basic button" style="z-index: 1000; position: fixed; top: 92%; right: 1%;"><i class="th user pink icon"></i></div>
+<div class="ui popup top left transition hidden vertical" style="z-index: 1000; position: fixed; top: 92%; right: 1%;">
+    <div class="ui vertical icon menu">
+        <a class="pink icon item">
+          <i class="user pink icon"></i>
+		  8500
+		</a>
+        <a class="pink icon item">
+          <i class=" shopping bag pink icon"></i>
+                    收藏
+        </a>
+        <a class="pink icon item">
+          <i class="history pink icon"></i>
+                        足迹
+        </a>
+        <a class="pink icon item">
+          <i class="pink logout icon"></i>
+                        登出
+        </a>
+    </div>
+</div>
+
 <div class="ui container" style="margin-top: 25px">
 	    <div class="ui segments">
 	       
@@ -270,6 +295,10 @@
         })
     ;
     $('.gift').popup();
+    
+    $('.fixed_button').popup({
+        on : 'click',
+    })
 </script>
 </body>
 </html>

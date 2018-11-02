@@ -99,7 +99,7 @@
                 $(this).addClass('loading disabled');
                 $('#phoneField').addClass('disabled');
                 $.ajax({
-                    url : 'http://localhost:8088/receiverSMS',
+                    url : '/receiverSMS',
                     type: "post",
                     data : {
                         phone : phone_number

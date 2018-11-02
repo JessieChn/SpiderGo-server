@@ -102,6 +102,7 @@
 				    </div>
                 </div>
                 <div class="nine wide column" style="padding-left:50px; padding-top:20px;">
+              
                     <div class="ui items">
                         <div class="item">
 	                       <h4 th:text="${phone.name}" class="ui black header" style="font-size:17px">小米 红米Note5 全网通版 4GB+64GB 黑色 移动联通电信4G手机 双卡双待 拍照手机</h4>
@@ -183,8 +184,11 @@
                                    <div th:each="impress : ${impresses.impressValue[0]}" th:text="${impress}" style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极40</div>
                                </div>
                            </div>
+                           
+                           
                         </div>
 	                </div>
+	                <div class="ui red left button addToColl" th:data-id="${phone._id}" data-url="/addToColl">加入收藏袋，降价收到短信通知</div>
 	                </div>
             </div>
         </div>
@@ -333,6 +337,43 @@ $(document).ready(function(){
         $('.scroll_to_pic').click(function(){$('html,body').animate({scrollTop:$('.scroll_pic').offset().top}, 500);});
         $('.scroll_to_bottom').click(function(){$('html,body').animate({scrollTop:$('.footer').offset().top}, 500);}); 
     });
+    
+    $(document).ready(function() {
+        $('.addToColl').click(function () {
+            var button = $(this)
+            var id = $(this).attr('data-id');
+            var url = $(this).attr('data-url');
+            $(this).addClass('loading disabled');
+            //alert(id);
+            $.ajax({
+                url : url,
+                type: "post",
+                data : {
+                    id : id
+                },
+                success: function (data ,textStatus, jqXHR)
+                    {
+                        if(data == 'fail'){
+                        	window.location.href= '/toLogin'
+                        }
+                        else if(data == 'success' && url == '/addToColl'){
+                        	button.removeClass('red');
+                        	//alert(button.text());
+                        	button.text('已收藏');
+                        	button.attr('data-url','/cancelColl')
+                        	button.removeClass('addToColl');
+                        	button.addClass('teal cancelColl');
+                        }
+                        else if(data == 'success' && url == '/cancelColl'){
+                        	alert(button.text());
+                        }
+                        button.removeClass('loading disabled');
+                    }, 
+               })
+        })
+    }
+    )
+    
 </script>
 </body>
 </html>
