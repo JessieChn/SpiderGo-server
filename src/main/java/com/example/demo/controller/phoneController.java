@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,7 +15,9 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.naming.spi.DirStateFactory.Result;
 import javax.servlet.http.HttpSession;
 import javax.sound.midi.Receiver;
@@ -47,7 +50,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.entity.Article;
+import com.example.demo.entity.Author;
 import com.example.demo.entity.Collection;
+import com.example.demo.entity.Comment2;
 import com.example.demo.entity.FilterParam;
 import com.example.demo.entity.Impresses;
 import com.example.demo.entity.Opinions;
@@ -58,20 +64,29 @@ import com.example.demo.entity.Prices;
 import com.example.demo.entity.Prices2;
 import com.example.demo.entity.SalePromotion;
 import com.example.demo.entity.SalePromotionInfor;
+import com.example.demo.entity.Topic;
 import com.example.demo.entity.User;
+import com.example.demo.entity.Wallet;
+import com.example.demo.repository.AritcleRepository;
+import com.example.demo.repository.AuthorRepository;
 import com.example.demo.repository.CollectionRepository;
+import com.example.demo.repository.Comment2Repository;
 import com.example.demo.repository.ImpressesRepository;
 import com.example.demo.repository.OpinionRepository;
 import com.example.demo.repository.PhoneRepository;
 import com.example.demo.repository.PriceRepository;
 import com.example.demo.repository.SalePromotionRepository;
+import com.example.demo.repository.TopicRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.WalletRepository;
 import com.fasterxml.jackson.databind.deser.impl.CreatorCandidate.Param;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
 import com.mongodb.MongoClient;
 import com.mongodb.client.DistinctIterable;
+
+import junit.framework.Test;
 
 @Controller
 public class phoneController {
@@ -98,6 +113,89 @@ public class phoneController {
     private final static List<String> sensitiveVocabulary = new ArrayList<String>(
                 Arrays.asList("其他","暂无信息","其他品牌")
             );
+    
+    @Resource
+    private AuthorRepository authorRepository;
+    
+    @Resource
+    private WalletRepository walletRepository;
+    
+    @Resource
+    private AritcleRepository aritcleRepository;
+    
+    @Resource
+    private Comment2Repository comment2Repository;
+    
+    @Resource
+    private TopicRepository topicRepository;
+    
+    @GetMapping("/test")
+    @ResponseBody
+    public Object Test() {
+        User user = userRepository.findById(33L).get();
+        Collection collection = new Collection();
+        collection.setCreateTime(new Date());
+        collection.setPhoneId("123");
+        user.addColl(collection);
+        user = userRepository.save(user);
+        System.out.println(user.getCollections());//这个只适用于 查看我的收藏 页面展示
+        List<String> ids =  user.getCollections().stream().map(Collection::getPhoneId).collect(Collectors.toList());
+        System.out.println(ids);
+        return user;
+        //多对多查找
+//        Article article = aritcleRepository.findById(83L).get();
+//        System.out.println(article.getTopics());
+//        return article;
+        
+        //级联新建
+//        Article article = new Article();
+//        article.setTitle("我们的爱");
+//        article.setContent("一去不复返");
+//        
+//        Comment2 comment2 = new Comment2();
+//        comment2.setContent("可以可以");
+//        article.addComment2(comment2);
+//        
+//        Comment2 comment3 = new Comment2();
+//        comment3.setContent("我们这一代");
+//        article.addComment2(comment3);
+//        
+//        Topic topic = new Topic();
+//        topic.setName("我们这个屯");
+//        article.addTopic(topic);
+//        
+//        System.out.println(article);
+//        aritcleRepository.save(article);
+//        return article;
+        
+/*        Wallet wallet = walletRepository.findById((long) 62).get();
+        System.out.println(wallet);
+        System.out.println(wallet.getAuthor()); //不能这么用
+*/        //查找
+//        Author author = authorRepository.findById((long) 61).get();
+//        System.out.println(author);
+//        return author;
+        
+        //级联新建
+//        Author author = new Author();
+//        author.setNickName("池章立");
+//        author.setPhone("13538628500");
+//        author.setSignDate(new Date());
+//        Wallet wallet = new Wallet();
+//        wallet.setBalance(BigDecimal.valueOf(123));
+//        author.setWallet(wallet);
+//        authorRepository.save(author);
+        
+        //级联更新
+//        Author author = authorRepository.findById((long) 59).get();
+//        author.setNickName("科比");
+//        author.getWallet().setBalance(BigDecimal.valueOf(10086));
+//        authorRepository.save(author);
+        
+        //级联删除
+        //authorRepository.deleteById((long) 59);
+        //return "good";
+    }
     
     
     @GetMapping("/")
@@ -177,7 +275,7 @@ public class phoneController {
     }
     
     private void beSession(User user, HttpSession session) {
-        user.setPassword(null);
+        //user.setPassword(null);
         session.setAttribute("user", user);
     }
 
@@ -191,18 +289,22 @@ public class phoneController {
     @PostMapping("/addToColl")
     @ResponseBody
     public String addToColl(String id, HttpSession session) {
-        System.out.println(id);
+        System.out.println(id);//商品的ID
         if(session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             System.out.println(session.getAttribute("user").toString());
-/*            Collection collection = new Collection();
-            collection.setUser(userRepository.getOne(user.getId()));
+            Collection collection = new Collection();
+            //user = userRepository.getOne(user.getId());
+            
             if(phoneRepository.existsById(id))
                 collection.setPhoneId(id);
             else 
                 return "fail";
             collection.setCreateTime(new Date());
-            collectionRepository.save(collection);*/
+            
+            user.getCollections().add(collection);
+            System.out.println(user);
+            //userRepository.
             
         }
         else {

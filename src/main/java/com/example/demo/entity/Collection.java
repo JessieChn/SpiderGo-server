@@ -1,14 +1,19 @@
 package com.example.demo.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name = "t_collection")
 public class Collection {
@@ -19,8 +24,17 @@ public class Collection {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
+    @ManyToMany
+    private List<User> users = new ArrayList<>();
     
+    public List<User> getUsers() {
+        return users;
+    }
     
+    @JsonBackReference
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
     public Collection() {
         
     }
