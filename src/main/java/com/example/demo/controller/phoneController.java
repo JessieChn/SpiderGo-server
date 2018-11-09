@@ -131,7 +131,12 @@ public class phoneController {
     
     @GetMapping("/test")
     @ResponseBody
-    public Object Test() {
+    public Object Test(HttpSession session) {
+        
+        if(session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            System.out.println(user);
+        }
         User user = userRepository.findById(33L).get();
         Collection collection = new Collection();
         collection.setCreateTime(new Date());
@@ -140,7 +145,8 @@ public class phoneController {
         user = userRepository.save(user);
         System.out.println(user.getCollections());//这个只适用于 查看我的收藏 页面展示
         List<String> ids =  user.getCollections().stream().map(Collection::getPhoneId).collect(Collectors.toList());
-        System.out.println(ids);
+        //System.out.println(ids);  //返回一个数组[123,123,123,123,123]
+        //System.out.println(ids.contains("123")); 返回true
         return user;
         //多对多查找
 //        Article article = aritcleRepository.findById(83L).get();
@@ -195,6 +201,100 @@ public class phoneController {
         //级联删除
         //authorRepository.deleteById((long) 59);
         //return "good";
+    }
+    
+    @GetMapping("/listCollection")
+    public ModelAndView listCollInformation(HttpSession session){
+        ModelAndView modelAndView = new ModelAndView("collection");
+        ArrayList<Prices2> priceList = new ArrayList<Prices2>();
+        ArrayList<PhoneDisplay> phoneList = new ArrayList<PhoneDisplay>();
+        
+        User user = null;
+        if(session.getAttribute("user") != null) {
+            user = (User) session.getAttribute("user");
+            user = userRepository.findById(user.getId()).get();
+            System.out.println(user);
+            List<Collection> collections = user.getCollections();
+            
+            List<String> ids =  collections.stream().map(Collection::getPhoneId).collect(Collectors.toList());
+            //System.out.println(ids);
+            
+            //这种方法查询到结果是乱序的
+            List<PhoneDisplay> phones = phoneRepository.findByIds(ids);
+            //System.out.println(phones);
+            
+            List<Prices2> priceses = priceRepository.findByIds(ids);
+            //System.out.println(priceses);
+            
+            //排序
+            List<String> phoneIds =  phones.stream().map(PhoneDisplay::get_id).collect(Collectors.toList());
+            //System.out.println(phoneIds);
+            List<String> priceIds =  priceses.stream().map(Prices2::get_id).collect(Collectors.toList());
+            //System.out.println(priceIds);
+            
+            for(int i=0 ; i<ids.size(); i++) {
+                priceList.add(priceses.get(priceIds.indexOf(ids.get(i))));
+                phoneList.add(phones.get(phoneIds.indexOf(ids.get(i))));
+            }
+            System.out.println(priceList);
+            System.out.println(phoneList);
+            
+            modelAndView.addObject("collections", collections);
+            modelAndView.addObject("phoneList", phoneList);
+            modelAndView.addObject("priceList", priceList);
+            return modelAndView;
+        }
+        else {
+            return null;
+        }
+    }
+    
+    
+    @GetMapping("/listCollectionResp")
+    @ResponseBody
+    public Map<String, Object> listCollInformationResp(HttpSession session){
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        ArrayList<Prices2> priceList = new ArrayList<Prices2>();
+        ArrayList<PhoneDisplay> phoneList = new ArrayList<PhoneDisplay>();
+        
+        User user = null;
+        if(session.getAttribute("user") != null) {
+            user = (User) session.getAttribute("user");
+            user = userRepository.findById(user.getId()).get();
+            System.out.println(user);
+            List<Collection> collections = user.getCollections();
+            
+            List<String> ids =  collections.stream().map(Collection::getPhoneId).collect(Collectors.toList());
+            //System.out.println(ids);
+            
+            //这种方法查询到结果是乱序的
+            List<PhoneDisplay> phones = phoneRepository.findByIds(ids);
+            //System.out.println(phones);
+            
+            List<Prices2> priceses = priceRepository.findByIds(ids);
+            //System.out.println(priceses);
+            
+            //排序
+            List<String> phoneIds =  phones.stream().map(PhoneDisplay::get_id).collect(Collectors.toList());
+            //System.out.println(phoneIds);
+            List<String> priceIds =  priceses.stream().map(Prices2::get_id).collect(Collectors.toList());
+            //System.out.println(priceIds);
+            
+            for(int i=0 ; i<ids.size(); i++) {
+                priceList.add(priceses.get(priceIds.indexOf(ids.get(i))));
+                phoneList.add(phones.get(phoneIds.indexOf(ids.get(i))));
+            }
+            System.out.println(priceList);
+            System.out.println(phoneList);
+            
+            map.put("collections", collections);
+            map.put("phoneList", phoneList);
+            map.put("priceList", priceList);
+            return map;
+        }
+        else {
+            return null;
+        }
     }
     
     
@@ -292,26 +392,43 @@ public class phoneController {
         System.out.println(id);//商品的ID
         if(session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
-            System.out.println(session.getAttribute("user").toString());
+            user = userRepository.findById(user.getId()).get(); //由于此用户和彼用户不一致，所以要重新查找
             Collection collection = new Collection();
-            //user = userRepository.getOne(user.getId());
-            
             if(phoneRepository.existsById(id))
                 collection.setPhoneId(id);
             else 
                 return "fail";
+            
             collection.setCreateTime(new Date());
-            
-            user.getCollections().add(collection);
+            user.addColl(collection);
+            user = userRepository.save(user);
             System.out.println(user);
-            //userRepository.
-            
+            System.out.println(user.getCollections());
         }
         else {
             return "fail";
         }
         return "success";
     }
+    
+    public String collOrNot(String phoneId, HttpSession session) {
+        System.out.println(phoneId);//商品的ID
+        if(session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            user = userRepository.findById(user.getId()).get(); //由于此用户和彼用户不一致，所以要重新查找
+            List<String> ids =  user.getCollections().stream().map(Collection::getPhoneId).collect(Collectors.toList());
+            System.out.println(ids);
+            if(ids.contains(phoneId)) {
+                System.out.println("已经收藏了");
+                return "colled"; //已经收藏了
+            }
+            else
+                return "notColl"; //未收藏
+        }
+        else
+            return "toLogin"; //未登录
+    }
+    
     
     @PostMapping("/cancelColl")
     @ResponseBody
@@ -320,11 +437,10 @@ public class phoneController {
         if(session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             user = userRepository.getOne(user.getId());
-            System.out.println(user);
-            //System.out.println(user.getCollections());
-            
-
-            
+            System.out.println(user.getCollections());
+            user.getCollections().removeIf(coll -> coll.getPhoneId().equals(id)); //按条件删除所有
+            System.out.println(user.getCollections());
+            userRepository.save(user);
         }
         else {
             return "fail";
@@ -396,7 +512,7 @@ public class phoneController {
     }
     
     @GetMapping("/phoneDetail/{id}")
-    public ModelAndView listInformation3(@PathVariable String id) {
+    public ModelAndView listInformation3(@PathVariable String id,HttpSession session) {
         ModelAndView modelAndView = new ModelAndView("detail");
         System.out.println(id);
         
@@ -420,12 +536,15 @@ public class phoneController {
         System.out.println(impresses);
         modelAndView.addObject("impresses", impresses);
         
+        String collStatus = collOrNot(id, session);
+        modelAndView.addObject("collStatus", collStatus);
+        
         return modelAndView;
     }
     
     @GetMapping("/phoneDetailResp/{id}")
     @ResponseBody
-    public Map<String, Object> listInformation4(@PathVariable String id) {
+    public Map<String, Object> listInformation4(@PathVariable String id,HttpSession session) {
         Map<String, Object> map = new HashMap<String,Object>(); 
         System.out.println(id);
         
@@ -448,6 +567,9 @@ public class phoneController {
         Impresses impresses = impressesRepository.findByIdUnity(id);
         System.out.println(impresses);
         map.put("impresses", impresses);
+        
+        String collStatus = collOrNot(id, session);
+        map.put("collStatus", collStatus);
         
         return map;
     }

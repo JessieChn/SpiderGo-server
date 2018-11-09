@@ -34,7 +34,9 @@ public interface PriceRepository extends MongoRepository<Prices2,String>{
     Prices2 findByIdUnity(String id);
     
 
-    
+    //收藏
+    @Query(value = "{'_id':{$in:?0}}", fields = "{'prices':{'$slice':-1}}")
+    List<Prices2> findByIds(Iterable<String> ids);
     
     
 

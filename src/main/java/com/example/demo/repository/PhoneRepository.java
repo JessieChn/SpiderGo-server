@@ -60,6 +60,9 @@ public interface PhoneRepository extends MongoRepository<Phone,String>{
 //    Optional<List<Phone>> findOptionalByBrandAndRamAndRom(String brand,String ram,String rom);
 //    
     
+    //收藏
+    @Query(value = "{'id':{$in:?0}}", fields = "{'ram':1,'rom':1,'source':1,'name':1 ,'thumb_pic':{'$slice':1}}")
+    List<PhoneDisplay> findByIds(Iterable<String> ids);
     
     
 

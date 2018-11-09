@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,6 +30,7 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
     
+    @OrderBy(value = "create_time")
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private List<Collection> collections = new ArrayList<>();
     

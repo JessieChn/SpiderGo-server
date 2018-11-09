@@ -1,0 +1,116 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>我的收藏</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css"
+          data-filtered="filtered">
+    <link rel="stylesheet" href="static/css/me.css">
+    <link rel="stylesheet" href="static/css/animate.css">
+
+</head>
+
+<body>
+
+
+
+<!--<div style="width: 1200px; margin: 50px auto;">-->
+<div class="ui container">
+    <div class="ui centered grid stackable" style="margin-top:10px;">
+        <h3 style="margin-top:12px;" class="ui horizontal divider header scroll_desc">
+            <i class="pink info circle icon"></i>
+            My Collections
+        </h3>
+        <div class="tablet fourteen wide column">
+            <div class="ui items">
+
+                <div class="item">
+                    <div class="image">
+                        <img src="./static/images/avator2.png">
+                    </div>
+                    <div class="middle aligned content">
+                        <a class="header">
+                            小米Max3 大屏游戏智能手机 4GB+64GB 金色 全网通4G手机 双卡双待
+                        </a>
+                        <br>
+                        <div class="header" style="margin-top: 10px"><i class="favorite yellow icon"></i>999元</div>
+                        <div class="extra">
+                            <div class="ui pink label">4GB</div>
+                            <div class="ui teal label">64GB</div>
+                            <div class="ui red right floated button coll" data-id="123" data-url="1234">取消收藏</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item">
+                    <div class="image">
+                        <img src="./static/images/avator2.png">
+                    </div>
+                    <div class="middle aligned content">
+                        <a class="header">
+                            小米Max3 大屏游戏智能手机 4GB+64GB 金色 全网通4G手机 双卡双待
+                        </a>
+                        <br>
+                        <div class="header" style="margin-top: 10px"><i class="favorite yellow icon"></i>999元</div>
+                        <div class="extra">
+                            <div class="ui pink label">4GB</div>
+                            <div class="ui teal label">64GB</div>
+                            <div class="ui red right floated button coll" data-id="12345" data-url="123467">取消收藏</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui basic modal">
+                    <div class="ui icon header">
+                        <i class="archive icon"></i>
+                        Archive Old Messages
+                    </div>
+                    <div class="content">
+                        <p>Your inbox is getting full, would you like us to enable automatic archiving of old messages?</p>
+                    </div>
+                    <div class="actions">
+                        <div class="ui red basic cancel inverted button">
+                            <i class="remove icon"></i>
+                            No
+                        </div>
+                        <div class="ui green ok inverted button" id="delete">
+                            <i class="checkmark icon"></i>
+                            Yes
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.js" data-filtered="filtered"></script>
+
+<script>
+    $(document).ready(function() {
+            $('.coll').click(function () {
+                var id = $(this).attr('data-id');
+                var url = $(this).attr('data-url');
+                $('#delete').attr('data-id',id);
+                $('.ui.basic.modal')
+                    .modal('show')
+                ;
+            })
+
+            $('#delete').click(function () {
+                var id = $(this).attr('data-id');
+                //alert(id)
+                //后端删除操作
+                //回调函数中把样式删除。
+                var delete_item = $('div.coll[data-id = '+ id +']');
+                delete_item.addClass('loading disabled');
+                delete_item.parent().parent().parent().hide(1000, function(){ delete_item.remove() });
+            })
+        }
+    )
+</script>
+</body>
+</html>

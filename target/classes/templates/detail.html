@@ -188,7 +188,9 @@
                            
                         </div>
 	                </div>
-	                <div class="ui red left button addToColl" th:data-id="${phone._id}" data-url="/addToColl">加入收藏袋，降价收到短信通知</div>
+	                <div th:if="${collStatus} == 'notColl'" class="ui red left button coll" th:data-id="${phone._id}" data-url="/addToColl">加入收藏袋，降价收到短信通知</div>
+	                <div th:if="${collStatus} == 'toLogin'" class="ui yellow left button coll" th:data-id="${phone._id}" data-url="/toLogin">登录后即可加入收藏袋</div>
+	                <div th:if="${collStatus} == 'colled'" class="ui teal left button coll" th:data-id="${phone._id}" data-url="/cancelColl">已收藏</div>
 	                </div>
             </div>
         </div>
@@ -339,11 +341,13 @@ $(document).ready(function(){
     });
     
     $(document).ready(function() {
-        $('.addToColl').click(function () {
+        $('.coll').click(function () {
             var button = $(this)
             var id = $(this).attr('data-id');
             var url = $(this).attr('data-url');
             $(this).addClass('loading disabled');
+            if(url == '/toLogin')
+            	window.location.href= '/toLogin' //如果是toLogin状态 就需要先去登录，剩下colled 和 notColl状态
             //alert(id);
             $.ajax({
                 url : url,
@@ -361,11 +365,13 @@ $(document).ready(function(){
                         	//alert(button.text());
                         	button.text('已收藏');
                         	button.attr('data-url','/cancelColl')
-                        	button.removeClass('addToColl');
                         	button.addClass('teal cancelColl');
                         }
                         else if(data == 'success' && url == '/cancelColl'){
-                        	alert(button.text());
+                            button.removeClass('teal');
+                            button.text('加入收藏袋，降价收到短信通知');
+                            button.attr('data-url','/addToColl')
+                            button.addClass('red');
                         }
                         button.removeClass('loading disabled');
                     }, 
