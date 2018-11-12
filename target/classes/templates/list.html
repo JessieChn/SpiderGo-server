@@ -258,7 +258,10 @@
 
 <div th:insert="header_footer :: footer"></div>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.js" data-filtered="filtered"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.js" data-filtered="filtered"></script>.
+<!-- 把header_footer中的script包裹进来 -->
+<!--/*/<th:block th:replace="header_footer :: script">/*/-->
+<!--/*/</th:block>/*/-->
 <script th:inline="javascript">
     $(document).ready(function(){
     	$('.search.icon').click(function(){

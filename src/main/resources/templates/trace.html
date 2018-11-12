@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>我的收藏</title>
+    <title>我的足迹</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css"
           data-filtered="filtered">
     <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
@@ -29,50 +29,18 @@
 <div class="ui container">
     <div class="ui centered grid stackable" style="margin-top:10px;">
         <h3 style="margin-top:12px;" class="ui horizontal divider header scroll_desc">
-            <i class="pink info circle icon"></i>
-            My Collections
+            <i class="pink history circle icon"></i>
+            我的足迹
         </h3>
-        <div class="tablet fourteen wide column">
+        <div class="tablet twelve wide column">
             <div class="ui items">
-
                 <div class="item" th:each="obj,stat:${phoneList}">
-                    <div class="image">
+                    <div class="ui tiny image">
                         <img th:src="${obj.thumbPic[0]}">
                     </div>
                     <div class="middle aligned content">
-                        <a class="header" th:text="${obj.name}" th:href="'/phoneDetail/' + ${obj._id}">
-                            小米Max3 大屏游戏智能手机 4GB+64GB 金色 全网通4G手机 双卡双待
-                        </a>
-                        <br>
-                        <div class="header" style="margin-top: 10px"><i class="favorite yellow icon"></i>[[${priceList[stat.index].prices[0].priceValue}]]</div>
-                        <div class="extra">
-                            <div class="ui pink label" th:text="${obj.ram}">4GB</div>
-                            <div class="ui teal label" th:text="${obj.rom}">64GB</div>
-                            <div class="ui red right floated button coll" th:data-id="${obj._id}" data-url="/cancelToColl">取消收藏</div>
-                        </div>
-                        <div style="opacity:0.5" th:text="${collections[stat.index].createTime}">
-                        2018-11-09 11:03:56.0
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="ui basic modal">
-                    <div class="ui icon header">
-                        <i class="trash alternate icon"></i>
-                        确定取消收藏吗？
-                    </div>
-                    <div class="content">
-                        <p>取消收藏后，如果商品降价，您将不会收到短信通知。</p>
-                    </div>
-                    <div class="actions">
-                        <div class="ui red basic cancel inverted button">
-                            <i class="remove icon"></i>
-                            否
-                        </div>
-                        <div class="ui green ok inverted button" id="delete">
-                            <i class="checkmark icon"></i>
-                            是
-                        </div>
+                        <a class="header" th:text="${obj.name}"  th:href="'/phoneDetail/' + ${obj._id}">12 Years a Slave 12 Years a Slave 12 Years a Slave 12 Years a Slave</a>
+                        <div class="content" style="opacity: 0.5" th:text="${traces[stat.index].createTime}">2018/11/12</div>
                     </div>
                 </div>
             </div>

@@ -40,6 +40,7 @@ import org.springframework.data.redis.core.RedisKeyValueAdapter;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,6 +66,7 @@ import com.example.demo.entity.Prices2;
 import com.example.demo.entity.SalePromotion;
 import com.example.demo.entity.SalePromotionInfor;
 import com.example.demo.entity.Topic;
+import com.example.demo.entity.Trace;
 import com.example.demo.entity.User;
 import com.example.demo.entity.Wallet;
 import com.example.demo.repository.AritcleRepository;
@@ -128,6 +130,20 @@ public class phoneController {
     
     @Resource
     private TopicRepository topicRepository;
+    
+
+    @GetMapping("/footer/collCount")
+    public String newblogs(Model model,HttpSession session) {
+        if(session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            user = userRepository.findById(user.getId()).get();
+            model.addAttribute("collCount",user.getCollections().size());
+        }
+        else {
+            model.addAttribute("collCount","请登录");
+        }
+        return "header_footer :: collCount";
+    }
     
     @GetMapping("/test")
     @ResponseBody
@@ -203,10 +219,8 @@ public class phoneController {
         //return "good";
     }
     
-    @GetMapping("/listCollection")
-    public ModelAndView listCollInformation(HttpSession session){
-        ModelAndView modelAndView = new ModelAndView("collection");
-        ArrayList<Prices2> priceList = new ArrayList<Prices2>();
+    @GetMapping("/listTrace")
+    public String listTraceInformation(Model model, HttpSession session){
         ArrayList<PhoneDisplay> phoneList = new ArrayList<PhoneDisplay>();
         
         User user = null;
@@ -214,39 +228,95 @@ public class phoneController {
             user = (User) session.getAttribute("user");
             user = userRepository.findById(user.getId()).get();
             System.out.println(user);
-            List<Collection> collections = user.getCollections();
+            List<Trace> traces = user.getTraces();
             
-            List<String> ids =  collections.stream().map(Collection::getPhoneId).collect(Collectors.toList());
-            //System.out.println(ids);
-            
+            List<String> ids =  traces.stream().map(Trace::getPhoneId).collect(Collectors.toList());
             //这种方法查询到结果是乱序的
-            List<PhoneDisplay> phones = phoneRepository.findByIds(ids);
-            //System.out.println(phones);
-            
-            List<Prices2> priceses = priceRepository.findByIds(ids);
-            //System.out.println(priceses);
-            
+            List<PhoneDisplay> phones = phoneRepository.findByIds(ids);     
             //排序
-            List<String> phoneIds =  phones.stream().map(PhoneDisplay::get_id).collect(Collectors.toList());
-            //System.out.println(phoneIds);
-            List<String> priceIds =  priceses.stream().map(Prices2::get_id).collect(Collectors.toList());
-            //System.out.println(priceIds);
-            
+            List<String> phoneIds =  phones.stream().map(PhoneDisplay::get_id).collect(Collectors.toList());         
             for(int i=0 ; i<ids.size(); i++) {
-                priceList.add(priceses.get(priceIds.indexOf(ids.get(i))));
                 phoneList.add(phones.get(phoneIds.indexOf(ids.get(i))));
             }
-            System.out.println(priceList);
-            System.out.println(phoneList);
-            
-            modelAndView.addObject("collections", collections);
-            modelAndView.addObject("phoneList", phoneList);
-            modelAndView.addObject("priceList", priceList);
-            return modelAndView;
+            model.addAttribute("traces", traces);
+            model.addAttribute("phoneList", phoneList);
+            return "trace";
         }
         else {
             return null;
         }
+    }
+    
+    
+    @GetMapping("/listTraceResp")
+    @ResponseBody
+    public Map<String, Object> listTraceInformationResp(Model model, HttpSession session){
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        ArrayList<PhoneDisplay> phoneList = new ArrayList<PhoneDisplay>();
+        
+        User user = null;
+        if(session.getAttribute("user") != null) {
+            user = (User) session.getAttribute("user");
+            user = userRepository.findById(user.getId()).get();
+            System.out.println(user);
+            List<Trace> traces = user.getTraces();
+            
+            List<String> ids =  traces.stream().map(Trace::getPhoneId).collect(Collectors.toList());
+            //这种方法查询到结果是乱序的
+            List<PhoneDisplay> phones = phoneRepository.findByIds(ids);     
+            //排序
+            List<String> phoneIds =  phones.stream().map(PhoneDisplay::get_id).collect(Collectors.toList());         
+            for(int i=0 ; i<ids.size(); i++) {
+                phoneList.add(phones.get(phoneIds.indexOf(ids.get(i))));
+            }
+            map.put("traces", traces);
+            map.put("phoneList", phoneList);
+            return map;
+        }
+        else {
+            return null;
+        }
+    }
+    
+    @GetMapping("/listCollection")
+    public String listCollInformation(Model model, HttpSession session){
+        //ModelAndView modelAndView = new ModelAndView("collection");
+        ArrayList<Prices2> priceList = new ArrayList<Prices2>();
+        ArrayList<PhoneDisplay> phoneList = new ArrayList<PhoneDisplay>();
+        
+        User user = null;
+        user = (User) session.getAttribute("user");
+        user = userRepository.findById(user.getId()).get();
+        System.out.println(user);
+        List<Collection> collections = user.getCollections();
+        
+        List<String> ids =  collections.stream().map(Collection::getPhoneId).collect(Collectors.toList());
+        //System.out.println(ids);
+        
+        //这种方法查询到结果是乱序的
+        List<PhoneDisplay> phones = phoneRepository.findByIds(ids);
+        //System.out.println(phones);
+        
+        List<Prices2> priceses = priceRepository.findByIds(ids);
+        //System.out.println(priceses);
+        
+        //排序
+        List<String> phoneIds =  phones.stream().map(PhoneDisplay::get_id).collect(Collectors.toList());
+        //System.out.println(phoneIds);
+        List<String> priceIds =  priceses.stream().map(Prices2::get_id).collect(Collectors.toList());
+        //System.out.println(priceIds);
+        
+        for(int i=0 ; i<ids.size(); i++) {
+            priceList.add(priceses.get(priceIds.indexOf(ids.get(i))));
+            phoneList.add(phones.get(phoneIds.indexOf(ids.get(i))));
+        }
+        System.out.println(priceList);
+        System.out.println(phoneList);
+        
+        model.addAttribute("collections", collections);
+        model.addAttribute("phoneList", phoneList);
+        model.addAttribute("priceList", priceList);
+        return "collection";
     }
     
     

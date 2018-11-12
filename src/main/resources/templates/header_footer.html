@@ -39,12 +39,15 @@
                 <div class="results" data-filtered="filtered"></div>
             </div>
             <div class=" ui item">
-                <button class="ui basic button" style="width: 8rem">
+                <a href="/listCollection" class="ui basic button" style="width: 8rem">
                     <i class=" shopping bag pink icon"></i>
                     收藏袋
                     &nbsp;&nbsp;
-                    <div class="floating ui pink label">22</div>
-                </button>
+                    <div class="floating ui pink label">
+                        <!-- 注意这里是segment中加载 -->
+                        <span id="newblog-container" th:fragment="collCount" th:text="${collCount}">22</span>
+                    </div>
+                </a>
             </div>
         </div>
 
@@ -170,5 +173,11 @@
     </div>
 </footer>
 
+<th:block th:fragment="script">
+  <script>
+	  /* newblog 已经在 segment中进行了加载，我这要在需要的地方加上这一句就好了。 */
+	  $('#newblog-container').load("/footer/collCount");
+  </script>
+</th:block>
 </body>
 </html>

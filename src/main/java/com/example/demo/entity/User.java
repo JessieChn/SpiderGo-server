@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -30,12 +31,21 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
     
-    @OrderBy(value = "create_time")
+    @OrderBy(value = "create_time desc")
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private List<Collection> collections = new ArrayList<>();
     
+    @OrderBy(value = "create_time desc")
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    private List<Trace> traces = new ArrayList<>();
+    
     public void addColl(Collection collection) {
         collections.add(collection);
+    }
+    
+    public void addTrace(Trace trace) {
+        traces.removeIf(t -> t.getPhoneId().equals(trace.getPhoneId()));
+        traces.add(trace);
     }
     
     public User() {
@@ -72,6 +82,16 @@ public class User {
     public void setCollections(List<Collection> collections) {
         this.collections = collections;
     }
+    
+    
+    public List<Trace> getTraces() {
+        return traces;
+    }
+
+    public void setTraces(List<Trace> traces) {
+        this.traces = traces;
+    }
+
     @Override
     public String toString() {
         return "User [id=" + id + ", phoneNumber=" + phoneNumber + ", password=" + password + ", createTime="

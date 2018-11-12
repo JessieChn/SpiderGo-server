@@ -279,6 +279,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
 <script src="../static/js/swiper.min.js" th:src="@{/js/swiper.min.js}"></script>
+<!-- 把header_footer中的script包裹进来 -->
+<!--/*/<th:block th:replace="header_footer :: script">/*/-->
+<!--/*/</th:block>/*/-->
 <script>
 var galleryThumbs = new Swiper('.gallery-thumbs', {
     spaceBetween: 10,
