@@ -116,6 +116,7 @@
 		                    <div class="middle aligned content">
 		                         <span class="ui pink header" style="font-size:25px;">¥</span>
 		                         <span th:text="${prices.prices[0].priceValue}" class="ui pink header" style="font-size:50px;">1349</span>
+		                         <span class="graph" th:data-id="${prices._id}" style="opacity: 0.4; float: right; margin-right: 10px;">历史价格曲线</span>
 		                    </div>
 		                    <span style="opacity: 0.5">更新日期：[[${prices.prices[0].date}]]</span>
 	                    </div>
@@ -273,6 +274,19 @@
         </div>
     </div>
 </div>
+
+<div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        历史价格趋势图
+    </div>
+    <div class="image content">
+        <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+        <div id="main" style="width: 600px;height:400px;margin: auto;"></div>
+    </div>
+</div>
+
+
 <div th:insert="header_footer :: footer"></div>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.js" data-filtered="filtered"></script>
@@ -282,6 +296,120 @@
 <!-- 把header_footer中的script包裹进来 -->
 <!--/*/<th:block th:replace="header_footer :: script">/*/-->
 <!--/*/</th:block>/*/-->
+<script src="../static/js/echarts.common.min.js" th:src="@{/js/echarts.common.min.js}"></script>
+<script>
+    $(document).ready(function() {
+        $('.graph').click(function () {
+            $('.ui.modal')
+                .modal('show')
+            ;
+            var id = $(this).attr('data-id');
+            //alert(id);
+            $.ajax({
+            	url : '/priceGraph',
+            	type: 'post',
+            	data: {
+            		id:id
+            	},
+            	success: function(data,textStatus,jqXHR)
+	            {
+	            	//alert(data);	
+                    //ajax获得数据
+                    //var obj  = {"salePromotion":{"_id":"jd6322713","id":"jd6322713","salePromotion":[{"salePromotionValue":["[换购] 购买1件可优惠换购热销商品","[赠品]三星（SAMSUNG）原装无线充电器 第三代快速充电器 15W充电 QI无线充电 苹果X无线充电器 通用小米/华为","[赠品]绿联 安卓数据线 手机充电线 2A快充Micro USB充电器线 支持华为小米vivo/oppo红米三星魅族 1米 10836 黑","[赠品]邦克仕（Benks）三星Galaxy S8+手机壳手机保护套 S8+磨砂全包保护壳 S8+保护壳 棒棒糖系列 透白色"],"date":"2018-10-23"},{"salePromotionValue":["满2000减200","[换购] 购买1件可优惠换购热销商品"],"date":"2018-11-02"},{"salePromotionValue":["满2000减200","满2500减50","[换购] 购买1件可优惠换购热销商品"],"date":"2018-11-09"}]},"prices":{"_id":"jd6322713","id":"73425jd6322713","prices":[{"priceValue":"4499.00","date":"2018-10-23"},{"priceValue":"3999.00","date":"2018-11-02"},{"priceValue":"3999.00","date":"2018-11-09"}]}};
+                    var obj  = data;
+                    var sale_promotion_sum = obj.salePromotion.salePromotion;
+                    var price_sum = obj.prices.prices;
+                    var date_array = new Array();
+                    var sale_promotion_array = new Array();
+                    var price_array = new Array();
+                    for(var i=0;i<sale_promotion_sum.length;i++){
+                        //获得所有日期
+                        //console.log(sale_promotion_sum[i].date);
+                        date_array.push(sale_promotion_sum[i].date);
+                        //获得所有日期下的活动
+                        sale_promotion_array.push(sale_promotion_sum[i].salePromotionValue)
+                        //获得价钱
+                        price_array.push(price_sum[i].priceValue)
+                    }
+                    console.log(date_array);
+                    console.log(sale_promotion_array);
+                    console.log(price_array);
+
+                    var myChart = echarts.init(document.getElementById('main'));
+                    option = {
+                        title: {
+                            text: '折线图'
+                        },
+                        tooltip: {
+                            "textStyle": {
+                                "fontSize": 8
+                            },
+                            trigger: 'axis',
+                            formatter: function (datas) {
+                                var res = "";
+                                for (var j =0 ;j<sale_promotion_array[datas[0].dataIndex].length;j++){
+                                    //if(sale_promotion_array[datas[0].dataIndex][j].length > 50)
+                                    //    res += sale_promotion_array[datas[0].dataIndex][j].substring(0,50)+ '<br>' + sale_promotion_array[datas[0].dataIndex][j].substring(50) + '<br>'
+                                    var length = sale_promotion_array[datas[0].dataIndex][j].length
+                                    if(length > 20) {
+                                        var circle_time = 1;
+                                        while (length > 0) {
+                                            res += sale_promotion_array[datas[0].dataIndex][j].substring(20 * (circle_time - 1), 20 * circle_time) + '<br>';
+                                            length = length - 20;
+                                            circle_time++;
+                                        }
+                                    }
+                                    else
+                                        res += sale_promotion_array[datas[0].dataIndex][j] + '<br>'
+                                }
+                                return res;
+                            }
+                        },
+                        legend: {
+                        },
+                        toolbox: {
+                            show : true,
+                            feature : {
+                                mark : {show: true},
+                                dataView : {show: true, readOnly: false},
+                                magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                                restore : {show: true},
+                                saveAsImage : {show: true}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: date_array
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: price_array,
+                            type: 'line',
+                            markPoint : {
+                                data : [
+                                    {type : 'max', name: '最大值'},
+                                    {type : 'min', name: '最小值'}
+                                ]
+                            },
+                            label: {//线条上的数字提示信息
+                                normal: {
+                                    show: true,
+                                    position: 'bottom'
+                                }
+                            },
+                        }
+                        ]
+                    };
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+	            }
+            })
+        })
+    })
+</script>
+
 <script>
 var galleryThumbs = new Swiper('.gallery-thumbs', {
     spaceBetween: 10,

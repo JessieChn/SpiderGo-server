@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -145,25 +146,50 @@ public class phoneController {
         return "header_footer :: collCount";
     }
     
+    @PostMapping("/priceGraph")
+    @ResponseBody
+    public Object priceGraph(String id) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        SalePromotion salePromotion = salePromotionRepository.findById(id).get();
+        System.out.println(salePromotion);
+        Prices2 prices = priceRepository.findById(id).get();
+        System.out.println(prices);
+        
+        map.put("salePromotion", salePromotion);
+        map.put("prices", prices);
+        
+        return map;
+    }
+    
     @GetMapping("/test")
     @ResponseBody
-    public Object Test(HttpSession session) {
+    public Object Test() {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        SalePromotion salePromotion = salePromotionRepository.findById("jd6322713").get();
+        System.out.println(salePromotion);
+        Prices2 prices = priceRepository.findById("jd6322713").get();
+        System.out.println(prices);
         
-        if(session.getAttribute("user") != null) {
-            User user = (User) session.getAttribute("user");
-            System.out.println(user);
-        }
-        User user = userRepository.findById(33L).get();
-        Collection collection = new Collection();
-        collection.setCreateTime(new Date());
-        collection.setPhoneId("123");
-        user.addColl(collection);
-        user = userRepository.save(user);
-        System.out.println(user.getCollections());//这个只适用于 查看我的收藏 页面展示
-        List<String> ids =  user.getCollections().stream().map(Collection::getPhoneId).collect(Collectors.toList());
+        map.put("salePromotion", salePromotion);
+        map.put("prices", prices);
+        
+        return map;
+        
+//        if(session.getAttribute("user") != null) {
+//            User user = (User) session.getAttribute("user");
+//            System.out.println(user);
+//        }
+//        User user = userRepository.findById(33L).get();
+//        Collection collection = new Collection();
+//        collection.setCreateTime(new Date());
+//        collection.setPhoneId("123");
+//        user.addColl(collection);
+//        user = userRepository.save(user);
+//        System.out.println(user.getCollections());//这个只适用于 查看我的收藏 页面展示
+//        List<String> ids =  user.getCollections().stream().map(Collection::getPhoneId).collect(Collectors.toList());
         //System.out.println(ids);  //返回一个数组[123,123,123,123,123]
         //System.out.println(ids.contains("123")); 返回true
-        return user;
+        //return user;
         //多对多查找
 //        Article article = aritcleRepository.findById(83L).get();
 //        System.out.println(article.getTopics());
