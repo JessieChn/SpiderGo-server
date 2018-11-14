@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,11 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -26,7 +32,13 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
+    
+//    @Pattern(regexp = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$",message = "手机号必须匹配")
+    @Pattern(regexp = "^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$",message = "手机号必须匹配") //注意java和javascript的正则有不同，去掉头和尾的一些符号就可以了。
     private String phoneNumber;
+    
+    @NotNull(message = "密码不能为空")
+    @Size(min = 6, message = "密码最小长度为6")
     private String password;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;

@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import javax.naming.spi.DirStateFactory.Result;
 import javax.servlet.http.HttpSession;
 import javax.sound.midi.Receiver;
+import javax.validation.Valid;
 
 import org.apache.logging.log4j.util.Strings;
 import org.hibernate.validator.cfg.context.ParameterConstraintMappingContext;
@@ -427,9 +428,33 @@ public class phoneController {
         return modelAndView;
     }
     
+    @GetMapping("/toEditPassword")
+    public ModelAndView toEditPassword() {
+        ModelAndView modelAndView = new ModelAndView("edit_password");
+        return modelAndView;
+    }
+    
+    @PostMapping("/editPassword")
+    //前台设置 phone 为disabled后，表单中的phone字段不会传过来，也不会发生后台验证错误
+    public String editPassword(@Valid User userTemp , String newPassword , HttpSession session, RedirectAttributes attributes, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            System.out.println(bindingResult.getFieldError().getDefaultMessage());
+        }
+        System.out.println(userTemp.getPhoneNumber() + " " + userTemp.getPassword() + " " + newPassword + " ");
+        User user = (User) session.getAttribute("user");
+        user = userRepository.findById(user.getId()).get();
+        user.setPassword(newPassword);
+        userRepository.save(user);
+        attributes.addFlashAttribute("message", "更新密码成功，亲爱的用户 ：" + user.getPhoneNumber());
+        return "redirect:/phoneToPrice";
+    }
+    
     @PostMapping("/login")
-    public String Login(String phone, String password ,HttpSession session, RedirectAttributes attributes) {
-        System.out.println(phone + " " + password);
+    //public String Login(String phone, String password ,HttpSession session, RedirectAttributes attributes) {
+    public String Login(@Valid User userTemp,HttpSession session, RedirectAttributes attributes) {
+        System.out.println(userTemp.getPhoneNumber() + " " + userTemp.getPassword());
+        String phone = userTemp.getPhoneNumber();
+        String password = userTemp.getPassword();
         //如果密码等于mysql表中的密码，说明是旧密码，不需要修改密码。
         //如果jpa在数据库中找不到的会就会返回null
         User user = userRepository.findByPhoneNumber(phone);
@@ -476,11 +501,11 @@ public class phoneController {
     }
 
 
-/*    @GetMapping("/logout")
+    @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("user");
-        return "redirect:/admin";
-    }*/
+        return "redirect:/toLogin";
+    }
     
     @PostMapping("/addToColl")
     @ResponseBody
