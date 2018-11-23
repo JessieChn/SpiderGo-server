@@ -1,0 +1,241 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>后台管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.css"
+          data-filtered="filtered">
+    <link rel="stylesheet" href="static/css/me.css">
+    <link rel="stylesheet" href="static/css/animate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
+
+</head>
+<!--<style>
+    .ui.image.label{
+        margin-top: 2px;
+    }
+</style>-->
+<body>
+<!--    <div th:object="${phonePage}">
+       <div th:each="obj,stat:*{content}" th:text="${obj._id}">_id</div>
+       <div th:each="obj,stat:*{content}" th:text="${obj.name}">123</div>
+   </div> -->
+   <div class="ui container" style="margin-top: 20px">
+       <div th:object="${phonePage}" class="ui stackable divided grid">
+       
+          <div th:each="obj,stat:*{content}" class="ui row segment">
+               <div class="four wide column">
+                              
+                   <div th:text="${obj._id}" class="ui header">
+                       ID:jd8245366
+                   </div>
+                   <div class="swiper-container gallery-thumbs">
+                       <div class="swiper-wrapper">
+                           <div th:each="thumb:${obj.thumbPic}" class="swiper-slide">
+                               <img th:src="${thumb}" src="//img11.360buyimg.com/n5/s430x430_jfs/t23389/133/1234798173/260351/f8d0ff29/5b570544N4bfddab1.jpg"  width="100%" height="100%" alt="">
+                           </div>
+<!--                       <div class="swiper-slide">
+                               <img src="//img11.360buyimg.com/n5/s430x430_jfs/t22567/175/1230379412/144269/3eccd628/5b570547N8b8fb1d3.jpg"  width="100%" alt="">
+                           </div>
+                           <div class="swiper-slide">
+                               <img src="//img11.360buyimg.com/n5/s430x430_jfs/t20503/97/2393731643/324947/7960c39e/5b57053fNd2a862c2.jpg"  width="100%" alt="">
+                           </div>
+                           <div class="swiper-slide">
+                               <img src="//img11.360buyimg.com/n5/s430x430_jfs/t22579/187/1218923174/87082/3583c263/5b57054cN677808ec.jpg"  width="100%" alt="">
+                           </div> -->
+                       </div>
+                   </div>
+                   <div class="swiper-container gallery-thumbs">
+                       <div class="swiper-wrapper">
+                           <div th:each="detail:${obj.detailUrl}" class="swiper-slide">
+                               <img th:src="${detail}" src="https://img30.360buyimg.com/sku/jfs/t17704/346/895364005/399844/4afead79/5aafe02fN6c00dd75.jpg" height="80px" alt="">
+                           </div>
+                       </div>
+                   </div>
+                   <div>
+                       <button class="ui black button" style="width:99%">
+                           导出到excel
+                       </button>
+                   </div>
+                   <div style="margin-top: 3px">
+                       <button class="ui primary button" style="width:48%">
+                           修改信息
+                       </button>
+                       <button class="ui negative   button" style="width:48%">
+                           删除信息
+                       </button>
+                       <button class="ui teal button" style="margin-top: 3px;width:99%">
+                           浏览原网页
+                       </button>
+                   </div>
+               </div>
+               <div class="twelve wide column">
+                   <div class="ui items">
+                       <div class="item">
+                           <div class="ui header" th:text="${obj.name}">小米 红米Note5 全网通版 6GB+128GB 黑色 移动联通电信4G手机 双卡双待</div>
+                       </div>
+                       <div class="item">
+                           <table class="ui pink very compact collapsing table" style="width: 100%">
+                               <tr>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/品牌.png">
+                                           [[${obj.brand}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/内存.png">
+                                           [[${obj.ram}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/rom.png">
+                                           [[${obj.rom}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/型号.png">
+                                            [[${obj.model}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/CPU.png">
+                                            [[${obj.cpu}]]
+                                       </a>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/屏幕.png">
+                                           [[${obj.screenSize}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/前置.png">
+                                           [[${obj.fCamera}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/后置.png">
+                                           [[${obj.rCamera}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/电池.png">
+                                           [[${obj.battery}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/指纹.png">
+                                           [[${obj.figer}]]
+                                       </a>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/存储卡.png">
+                                            [[${obj.memoryCard}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/扩展.png">
+                                           [[${obj.maxMemSup}]]
+                                       </a>
+                                   </td>
+
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/分辨率.png">
+                                           [[${obj.resolution}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <a class="ui image pink label m-opacity">
+                                           <img src="/images/id.png">
+                                           [[${obj._id}]]
+                                       </a>
+                                   </td>
+                                   <td>
+                                       <div class="ui image pink label m-opacity">
+                                           <img src="/images/来源.png">
+                                            [[${obj.source}]]
+                                       </div>
+                                   </td>
+                               </tr>
+                           </table>
+                       </div>
+                        <!-- <div th:text=${opinionsList[stat]}></div> -->
+                       <div class="item" style="margin-left: 7px">
+                           <div>
+                               <div class="ui image pink label m-opacity">
+                                   <img src="/images/好评.png">
+                                   [[${opinionsList[stat.index].opinionValues[0].highNumber}]]
+                               </div>
+                               <div class="ui image pink label m-opacity">
+                                   <img src="/images/一般.png">
+                                   [[${opinionsList[stat.index].opinionValues[0].mediumNumber}]]
+                               </div>
+                               <div class="ui image pink label m-opacity">
+                                   <img src="/images/差评.png">
+                                   [[${opinionsList[stat.index].opinionValues[0].lowNumber}]]
+                               </div>
+                               <div class="ui image pink label m-opacity">
+                                   <img src="/images/比例.png">
+                                   [[${opinionsList[stat.index].opinionValues[0].score}]]
+                               </div>
+                           </div>
+                       </div>
+
+                       <div th:unless="${#lists.isEmpty(salePromotionList[stat.index].salePromotion[0].salePromotionValue)}" class="item" style="margin-left: 7px">
+                           <div th:each="sale:${salePromotionList[stat.index].salePromotion[0].salePromotionValue}" th:text="${sale}" style="opacity: 0.8;" class="ui mini grey horizontal label">[换购] 购买1件可优惠换购热销商品</div>
+                       </div>
+
+                       <div class="item" style="margin-left: 7px">
+                           <div>
+                               <div style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极=307</div>
+                               <div th:each="impress:${impressesList[stat.index].impressValue[0]}" th:text="${impress}" style="opacity: 0.6; margin-top:3px;" class="ui mini grey  horizontal label">流畅至极40</div>
+                           </div>
+                       </div>
+
+
+                   </div>
+                   
+               </div>
+           </div>
+           
+       </div>
+   </div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.3/dist/semantic.min.js" data-filtered="filtered"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
+<script src="./static/js/swiper.min.js"></script>
+<script>
+    var galleryThumbs = new Swiper('.gallery-thumbs', {
+        spaceBetween: 10,
+        slidesPerView: 4,
+        loop: false,
+        freeMode: true,
+        loopedSlides: 4, //looped slides should be the same
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
+    });
+</script>
+</body>
+</html>

@@ -12,6 +12,7 @@ import org.springframework.lang.Nullable;
 
 import com.example.demo.entity.Phone;
 import com.example.demo.entity.PhoneDisplay;
+import com.example.demo.entity.Prices2;
 import com.example.demo.entity.SalePromotion;
 import com.example.demo.entity.SalePromotionInfor;
 
@@ -30,14 +31,10 @@ public interface SalePromotionRepository extends MongoRepository<SalePromotion,S
     
     
     @Query(value = "{'id':?0}", fields = "{'sale_promotion':{'$slice':-1}}")
-    SalePromotion findByIdUnity(String brand);
+    SalePromotion findByIdUnity(String id);
     
-
-    
-    
-    
-
-    
+    @Query(value = "{'_id':{$in:?0}}", fields = "{'sale_promotion':{'$slice':-1}}")
+    List<SalePromotion> findByIds(Iterable<String> ids);
     
     
 }
